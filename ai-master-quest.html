@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 교육 마스터의 여정 — 27차시 종합 복습</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Pretendard','Apple SD Gothic Neo','Noto Sans KR',sans-serif; background:#0f0a1e; }
+  #root { min-height:100vh; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<script type="text/babel">
+const { useState, useRef, useCallback } = React;
+
+
+
+const STATIONS = [
+  {
+    id: 1, icon: "🏰", title: "여정의 시작",
+    subtitle: "12개 과정을 되돌아보며",
+    badge: "🛡️", badgeName: "회고의 방패",
+    color: "#6366f1",
+    content: [
+      "27차시의 여정의 마지막 공통과정, 본격 진단에 앞서 1~12번 과정을 함께 되돌아봅시다.",
+      "환류 = 연수를 통해 얻은 배움과 경험이 사라지지 않고, 다음 단계의 더 나은 교육을 위해 다시 흐르게(순환하게) 만드는 고리입니다.",
+      "무엇을 배웠고(이해), 어떻게 써 보았으며(활용), 무엇이 달라졌는지(성찰)을 떠올려보세요.",
+      "진단은 평가가 아닌 성장의 출발점 : 솔직하고 편안하게 함께해요."
+    ],
+    question: "12개 과정을 지나온 나, 1차시의 나와 무엇이 달라졌을까?",
+    inputType: "multi_entry"
+  },
+  {
+    id: 2, icon: "🗺️", title: "역량 체계 이해",
+    subtitle: "A~G 역량과 과정 구조",
+    badge: "📜", badgeName: "지식의 두루마리",
+    color: "#8b5cf6",
+    content: [
+      "[공통과정] ①②③ AI·디지털 교육 본질·가치관·윤리 (초·중등 모두 함께)",
+      "[집중과정·분반] ④~⑫ 학교급·교과별 연수과정에서 설계→실행→분석→환류",
+      "[공통과정] ⑬ 오늘, 성장을 이어가다 (사후 진단·전문성 경로 설계)",
+      "교과목은 달라도 같은 역량체계(A~G)와 같은 흐름(이해→설계→실행→평가→성장)을 걸어왔습니다."
+    ],
+    competencies: [
+      { code: "A", name: "교육 이해", desc: "철학·본질·필요성 인식", level: "기본" },
+      { code: "B", name: "윤리적 실천", desc: "디지털 규범·시민성·안전", level: "기본" },
+      { code: "C", name: "수업·학습자 분석", desc: "데이터 해석·학생 이해", level: "교육 실천" },
+      { code: "D", name: "설계", desc: "수업 디자인·맞춤형 경로 설계", level: "교육 실천" },
+      { code: "E", name: "실행", desc: "상호작용 촉진·디지털 도구 활용", level: "교육 실천" },
+      { code: "F", name: "평가", desc: "과정중심평가·데이터 기반 피드백", level: "교육 실천" },
+      { code: "G", name: "AI·디지털 기반 교사 전문성 개발", desc: "메타역량", level: "발전" }
+    ],
+    hasCompetencyBanner: true,
+    question: "나의 학교급·교과목 연수과정에서 가장 크게 배운 것은 무엇인가? 역량체계의 이름과 내용을 구체적으로 적어주세요.",
+    inputType: "multi_entry"
+  },
+  {
+    id: 3, icon: "💎", title: "①②③ 본질·가치관·윤리",
+    subtitle: "AI 시대 교육의 뿌리",
+    badge: "💠", badgeName: "가치관의 보석",
+    color: "#3b82f6",
+    content: [
+      "① 교육 본질 이해 — AI 시대 교육의 방향, 교사·학습자·AI 역할 매트릭스",
+      "② 교육 가치관 정립 — 학생·교사 주도성, 사회정서학습, 나의 교육 가치관 선언문",
+      "③ 교육 윤리 이해 — 데이터 보안·개인정보, 윤리 딜레마 분석, 실천 체크리스트",
+      "키운 역량: A(이해)·B(윤리)·C3 — 초·중등 모두가 함께 다진 '뿌리'"
+    ],
+    question: "나의 'AI·디지털 교육 가치관'은 그때보다 얼마나 또렷해졌나?",
+    inputType: "multi_entry"
+  },
+  {
+    id: 4, icon: "📊", title: "④⑤ 데이터·설계",
+    subtitle: "학생을 읽는 눈",
+    badge: "🔍", badgeName: "분석의 렌즈",
+    color: "#0ea5e9",
+    content: [
+      "과정명: AI·디지털 기반 교수학습 설계 이해(1) · 역량 C1·C2·D1·D2",
+      "④ 사례 분석과 학습 데이터 해석 — 데이터로 학생 읽기(양적·질적), 데이터 해석 기술서 작성",
+      "⑤ 목표-활동-평가를 잇는 설계 — 백워드 설계, 성취기준 정합성, 도구-목적 매핑",
+      "교과별 분반에서 각자의 성취기준·교과 맥락으로 실습 포트폴리오: 수업설계안 시작"
+    ],
+    question: "데이터로 학생을 '읽는' 눈은 얼마나 자랐을까?",
+    inputType: "multi_entry"
+  },
+  {
+    id: 5, icon: "🔧", title: "⑥⑦ 도구·평가",
+    subtitle: "목적을 위한 수단",
+    badge: "⚙️", badgeName: "도구의 톱니",
+    color: "#10b981",
+    content: [
+      "과정명: AI·디지털 기반 교수학습 설계 이해(2) · 역량 D1·D2·E1·F1",
+      "⑥ 맥락에 맞는 도구 활용 — 도입-전개-정리별 도구 매핑, 교사 역할 변화(설명자→촉진자)",
+      "⑦ 데이터 기반 과정중심평가 설계 — 루브릭·체크리스트·피드백, 백워드 설계로 통합",
+      "수준별 지원(기초~심화), 교과 성취기준 기반 (연수 과제: 수업설계안 초안 완성)"
+    ],
+    question: "도구는 '목적'을 위한 수단이라는 원칙, 잘 지키고 있는가?",
+    inputType: "multi_entry"
+  },
+  {
+    id: 6, icon: "⚔️", title: "⑧⑨⑩ 집합 실행",
+    subtitle: "동료와 함께 다듬기",
+    badge: "🤝", badgeName: "협력의 훈장",
+    color: "#f59e0b",
+    content: [
+      "⑧ 실천의 시작 (공통) — 집합 워밍업, 원격 학습 점검, 분임·팀 편성",
+      "⑨ 교수학습 설계 워크숍 — 역량 C2·D2·E2·F2 교과별 분반에서 설계안 구체화·동료 검토",
+      "도구 활용 점검표·인지부하 점검, 발문·학생 동선 정교화 → 수업설계안 1차 보완본",
+      "키운 역량: 혼자 만든 설계를 '함께' 다듬기 시작"
+    ],
+    question: "동료의 눈으로 본 내 수업, 어떤 점이 새로웠나?",
+    inputType: "multi_entry"
+  },
+  {
+    id: 7, icon: "🔄", title: "⑪⑫ 분석·환류",
+    subtitle: "데이터가 알려준 방향",
+    badge: "📈", badgeName: "환류의 화살",
+    color: "#ef4444",
+    content: [
+      "⑪ 교수학습 데이터 분석 — 역량 C2 양적·질적 학습데이터 정제·시각화·해석, 편향 재검토",
+      "⑫ 평가 결과 기반 환류 — 역량 C3·D3·E3·F3 설계 타당성 성찰, 환류 전략, 동료 코칭",
+      "교과별 분반에서 ⑩ 실행 데이터를 분석→환류로 연결, 우수 설계안 발표·시연",
+      "이 모든 여정이 오늘 ⑬번 과정에서 되돌아 봅니다."
+    ],
+    question: "데이터가 알려 준 '다음 수업'의 방향은 무엇이었나?",
+    inputType: "multi_entry"
+  },
+  {
+    id: 8, icon: "📝", title: "한 줄 회고",
+    subtitle: "각 과정에서 내가 얻은 것",
+    badge: "✏️", badgeName: "기록의 펜",
+    color: "#a855f7",
+    content: ["각 과정에서 '내가 얻은 것'을 한 줄로 적어 봅니다."],
+    question: "",
+    inputType: "reflection_table",
+    tableRows: [
+      { label: "① 본질 이해", hint: "AI 시대 교육 방향·역할 매트릭스" },
+      { label: "②③ 가치관·윤리", hint: "가치관 선언문·윤리 체크리스트" },
+      { label: "④⑤ 데이터·설계", hint: "데이터 해석·수업설계 뼈대" },
+      { label: "⑥⑦ 도구·평가", hint: "도구 맥락 활용·과정중심평가 설계" },
+      { label: "⑧⑨⑩ 집합 실행", hint: "팀 설계·마이크로티칭 실행" },
+      { label: "⑪⑫ 분석·환류", hint: "학습데이터 분석·환류 설계" }
+    ]
+  },
+  {
+    id: 9, icon: "⭐", title: "역량 자기평가",
+    subtitle: "A~F 역량 자신감 점검",
+    badge: "🌟", badgeName: "자각의 별",
+    color: "#eab308",
+    content: ["A~F 역량 키워드를 보고 현재 나의 자신감을 1~5점으로 표시하세요."],
+    question: "",
+    inputType: "competency_rating",
+    ratings: [
+      { code: "A", name: "교육 이해", desc: "철학·본질·필요성 인식" },
+      { code: "B", name: "윤리적 실천", desc: "디지털 규범·시민성·안전" },
+      { code: "C", name: "수업·학습자 분석", desc: "데이터 해석·학생 이해" },
+      { code: "D", name: "설계", desc: "수업 디자인·맞춤형 경로 설계" },
+      { code: "E", name: "실행", desc: "상호작용 촉진·디지털 도구 활용" },
+      { code: "F", name: "평가", desc: "과정중심평가·데이터 기반 피드백" }
+    ]
+  },
+  {
+    id: 10, icon: "🌌", title: "나의 별자리",
+    subtitle: "메타 역량(G)으로 성찰",
+    badge: "💫", badgeName: "별자리의 빛",
+    color: "#6366f1",
+    content: [
+      "앞 페이지에서 체크한 A~F 점수를 기반으로 '나의 별자리'가 만들어집니다.",
+      "가장 크게 부푼 영역 = 강점",
+      "움푹 들어간 영역 = 보완점 (G역량이 이 전체를 감싸는 메타 역량)"
+    ],
+    question: "",
+    inputType: "constellation",
+    fields: [
+      { id: "strength", label: "강점 역량", placeholder: "예: D — 설계" },
+      { id: "weakness", label: "보완 역량", placeholder: "예: F — 평가" },
+      { id: "reflection", label: "성찰 한 문장", placeholder: "나는 (  ) 역량을 보완하여, A~F가 조화로운 수업을 설계하고 싶다." }
+    ]
+  },
+  {
+    id: 11, icon: "🎯", title: "Keep · Problem · Try",
+    subtitle: "12개 과정을 KPT로 정리",
+    badge: "🏹", badgeName: "전략의 화살",
+    color: "#22c55e",
+    content: ["12개 과정을 돌아보며 Keep(잘된 것·이어갈 것), Problem(아쉬운 것·문제), Try(새로 시도할 것)로 정리해 봅니다."],
+    question: "",
+    inputType: "kpt"
+  },
+  {
+    id: 12, icon: "🦋", title: "Before & After",
+    subtitle: "연수 전과 후, 나의 변화",
+    badge: "👑", badgeName: "변화의 왕관",
+    color: "#ec4899",
+    content: ["연수 전과 후, 나의 변화를 적어 봅니다."],
+    question: "",
+    inputType: "before_after",
+    rows: [
+      { label: "마음가짐", beforeHint: "예) AI가 두렵고 귀찮았다", afterHint: "예) AI가 수업의 파트너로 느껴진다" },
+      { label: "수업 설계", beforeHint: "예) 교과서 진도 나가기 급급", afterHint: "" },
+      { label: "동료 관계", beforeHint: "", afterHint: "" }
+    ]
+  }
+];
+
+function RadarChart({ scores, size = 220 }) {
+  const labels = ["A","B","C","D","E","F"];
+  const cx = size/2, cy = size/2, r = size/2 - 30;
+  const n = 6;
+  const getPoint = (i, val) => {
+    const angle = (Math.PI * 2 * i / n) - Math.PI / 2;
+    const dist = (val / 5) * r;
+    return [cx + dist * Math.cos(angle), cy + dist * Math.sin(angle)];
+  };
+  const rings = [1,2,3,4,5];
+  return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+      {rings.map(ring => (
+        <polygon key={ring} points={Array.from({length:n},(_,i)=>getPoint(i,ring).join(",")).join(" ")}
+          fill="none" stroke="#4b5563" strokeWidth={ring===5?"1.5":"0.5"} opacity={0.4}/>
+      ))}
+      {Array.from({length:n},(_,i)=>{
+        const [x,y] = getPoint(i,5);
+        return <line key={i} x1={cx} y1={cy} x2={x} y2={y} stroke="#4b5563" strokeWidth="0.5" opacity={0.3}/>;
+      })}
+      {scores.some(s=>s>0) && (
+        <polygon points={scores.map((s,i)=>getPoint(i,s||0).join(",")).join(" ")}
+          fill="rgba(99,102,241,0.25)" stroke="#818cf8" strokeWidth="2"/>
+      )}
+      {scores.map((s,i)=>{
+        if(!s) return null;
+        const [x,y] = getPoint(i,s);
+        return <circle key={i} cx={x} cy={y} r={4} fill="#818cf8"/>;
+      })}
+      {labels.map((l,i)=>{
+        const [x,y] = getPoint(i,5.8);
+        return <text key={i} x={x} y={y} textAnchor="middle" dominantBaseline="middle"
+          fill="#d1d5db" fontSize="13" fontWeight="700">{l}</text>;
+      })}
+    </svg>
+  );
+}
+
+function App() {
+  const [page, setPage] = useState("start");
+  const [currentStation, setCurrentStation] = useState(0);
+  const [answers, setAnswers] = useState({});
+  const [tableAnswers, setTableAnswers] = useState({});
+  const [ratings, setRatings] = useState({A:0,B:0,C:0,D:0,E:0,F:0});
+  const [kpt, setKpt] = useState({keep:[],problem:[],try:[]});
+  const [kptInput, setKptInput] = useState({keep:"",problem:"",try:""});
+  const [beforeAfter, setBa] = useState({});
+  const [baInput, setBaInput] = useState({});
+  const [constellationFields, setCf] = useState({});
+  const [multiEntries, setMultiEntries] = useState({});
+  const [currentInput, setCurrentInput] = useState("");
+  const [badges, setBadges] = useState(new Set());
+  const [showBadge, setShowBadge] = useState(null);
+  const [bannerOpen, setBannerOpen] = useState(false);
+  const reportRef = useRef();
+
+  const COMP_FRAMEWORK = [
+    { code:"A", area:"기본", name:"AI·디지털 기반 교육 이해", color:"#60a5fa",
+      cols:[
+        {title:"A1 이해",sub:"교육 본질과 필요성 이해",items:["AI·디지털 기반 교육 본질 이해","배경과 필요성 인식","교사 역할 및 학생 성장 이해"]},
+        {title:"A2 활용",sub:"교육 실천 탐색",items:["교육과정·수업·평가 활용 탐색","학습과 학생 지도 활용 탐색","개별화맞춤형 교육 활용 탐색"]},
+        {title:"A3 성찰",sub:"교육 가치관 정립",items:["교육적 활용 관점 성찰","교사 주도성 성찰","역량 개발 방향 성찰"]}
+      ]},
+    { code:"B", area:"기본", name:"윤리적 실천", color:"#60a5fa",
+      cols:[
+        {title:"B1 이해",sub:"AI·디지털 윤리 원칙 이해",items:["인간 중심 기술 활용 원칙 이해","디지털 교육 규범 이해","안정성, 공정성 투명성 원칙 이해"]},
+        {title:"B2 활용",sub:"AI·디지털 기술 윤리적 활용",items:["윤리적 도구 활용","저작권 윤리 실천","학습데이터·활동결과물의 안전하고 투명한 관리·활용"]},
+        {title:"B3 성찰",sub:"AI·디지털 윤리 인식 및 성찰",items:["교사 정체성과 역할 성찰","윤리적 판단의 비판적 성찰","윤리적 실천 역량 개발"]}
+      ]},
+    { code:"C", area:"교육 실천", name:"수업 및 학습자 분석", color:"#a78bfa",
+      cols:[
+        {title:"C1 이해",sub:"데이터 기반 교육 맥락 분석 필요성 이해",items:["데이터 분석의 중요성 이해","디지털 환경 데이터 활용","AI·디지털 도구의 분석 지원 기능 이해"]},
+        {title:"C2 활용",sub:"학습데이터 분석 및 해석 방법",items:["AI 기반 데이터 분석","신뢰성 있는 분석 체계 구축","데이터 시각화와 해석"]},
+        {title:"C3 성찰",sub:"종합적(인지·사회정서) 성장 지원을 위한 성찰",items:["정확성과 신뢰성 검증","편향성과 윤리적 고려","사회정서적 지원을 위한 학습자 이해 성찰"]}
+      ]},
+    { code:"D", area:"교육 실천", name:"AI·디지털 교수·학습 및 평가 설계", color:"#a78bfa",
+      cols:[
+        {title:"D1 이해",sub:"AI·디지털 기반 교수·학습 및 평가 설계 이해",items:["맞춤형 학습 경로와 학생 참여형 활동 설계의 이해","교육과정·수업·평가 정합성 설계의 이해","AI·디지털 도구의 수업 및 평가 설계 지원 기능 이해"]},
+        {title:"D2 활용",sub:"AI·디지털 기반 교수·학습 및 평가 설계",items:["맞춤형 학습 경로와 학생 참여형 활동 설계","교수 학습과 통합된 과정중심 평가 설계","적합한 AI·디지털 도구 선정"]},
+        {title:"D3 성찰",sub:"설계의 타당성과 적절성 성찰",items:["맞춤형 학습 경로와 학생 참여형 활동의 교육적 타당성 검증","교육과정·수업·평가의 정합성과 공정성 검증","AI·디지털 도구 선정 및 활용의 적절성 검증"]}
+      ]},
+    { code:"E", area:"교육 실천", name:"AI·디지털 교수·학습 실행", color:"#a78bfa",
+      cols:[
+        {title:"E1 이해",sub:"AI·디지털 기반 학생 참여 교수·학습 실행 이해",items:["학생참여 수업 실행 방향성 이해","교사 역할 확장 이해","AI·디지털 도구의 수업 실행 지원 기능 이해"]},
+        {title:"E2 활용",sub:"AI·디지털 기반 학생 참여 교수·학습 실행",items:["AI·디지털 기술 활용 단계별 수업 실행","학생 참여 촉진 전략 실행","교사·학생·AI 상호작용 촉진"]},
+        {title:"E3 성찰",sub:"학생 참여 수업의 실천적 성찰",items:["수업 실행 결과 분석","AI·디지털 활용 인지적·사회적·정서적 교육 효과 성찰","데이터 기반 수업 개선"]}
+      ]},
+    { code:"F", area:"교육 실천", name:"평가 실행", color:"#a78bfa",
+      cols:[
+        {title:"F1 이해",sub:"AI·디지털 기반 과정중심평가의 이해",items:["과정중심평가 개념과 필요성 이해","데이터 기반 평가 중요성과 효과 탐색","AI·디지털 도구의 평가 실행 지원 기능 이해"]},
+        {title:"F2 활용",sub:"AI·디지털 기반 과정중심평가의 실행",items:["평가 사례 분석 및 적용","수업 맥락 기반 평가 도구 설계","평가 도구 검토 및 보완 (다면성·자기성찰)"]},
+        {title:"F3 성찰",sub:"평가 결과 기반 교수·학습 환류",items:["개별 맞춤형 피드백 계획·공유","교수학습 전략 개선 및 적용","평가 데이터 분석 및 교육적 성찰"]}
+      ]},
+    { code:"G", area:"발전", name:"AI·디지털 기반 교사 전문성 개발", color:"#fbbf24",
+      cols:[
+        {title:"G1 이해",sub:"AI·디지털 기반 교사 전문성 영역 이해",items:["AI·디지털 기반 교사 전문성 영역 이해","AI·디지털 기반 교과학습 혁신 영역 이해","디지털 생산자와 윤리적 활용"]},
+        {title:"G2 활용",sub:"AI·디지털 기반 교사 전문성 계획 수립",items:["역량체계 기반 자기 진단","맞춤형 전문성 개발 경로","전문성 개발을 위한 AI 학습 자원 확보"]},
+        {title:"G3 성찰",sub:"실천 기반 전문성 성찰 및 협력적 성장",items:["학습공동체 공동 실천","콘텐츠 제작과 공유확산","실천 기록 기반 성찰과 환류"]}
+      ]}
+  ];
+
+  const earnBadge = (id) => {
+    if (!badges.has(id)) {
+      const nb = new Set(badges);
+      nb.add(id);
+      setBadges(nb);
+      setShowBadge(id);
+      setTimeout(() => setShowBadge(null), 2000);
+    }
+  };
+
+  const goStation = (idx) => { setCurrentStation(idx); setPage("station"); };
+  const station = STATIONS[currentStation];
+
+  const hasInput = (idx) => {
+    const s = STATIONS[idx];
+    if (s.inputType === "textarea") return !!answers[s.id];
+    if (s.inputType === "multi_entry") return (multiEntries[s.id] || []).length > 0;
+    if (s.inputType === "reflection_table") return Object.keys(tableAnswers).some(k => k.startsWith(`${s.id}-`));
+    if (s.inputType === "competency_rating") return Object.values(ratings).some(v => v > 0);
+    if (s.inputType === "kpt") return kpt.keep.length>0 || kpt.problem.length>0 || kpt.try.length>0;
+    if (s.inputType === "before_after") return Object.values(beforeAfter).some(v => Array.isArray(v) && v.length > 0);
+    if (s.inputType === "constellation") return Object.keys(constellationFields).length > 0;
+    return false;
+  };
+
+  const COMP_NAMES = {A:"교육 이해",B:"윤리적 실천",C:"수업·학습자 분석",D:"설계",E:"실행",F:"평가"};
+
+  const analyzeConstellation = () => {
+    const r = ratings;
+    const vals = [r.A,r.B,r.C,r.D,r.E,r.F];
+    if (vals.every(v=>v===0)) return null;
+    const codes = ["A","B","C","D","E","F"];
+    const filled = vals.filter(v=>v>0);
+    const max = Math.max(...vals);
+    const min = Math.min(...(filled.length?filled:[0]));
+    const avg = vals.reduce((a,b)=>a+b,0)/(filled.length||1);
+    const strongCodes = codes.filter((_,i)=>vals[i]===max);
+    const weakCodes = codes.filter((_,i)=>vals[i]===min && vals[i]<max);
+
+    // H(4-5)=2, M(3)=1, L(1-2)=0
+    const cl = v => v>=4?2:v===3?1:v>=1?0:-1;
+    const lv = {A:cl(r.A),B:cl(r.B),C:cl(r.C),D:cl(r.D),E:cl(r.E),F:cl(r.F)};
+    const nH = Object.values(lv).filter(v=>v===2).length;
+    const nM = Object.values(lv).filter(v=>v===1).length;
+    const nL = Object.values(lv).filter(v=>v===0).length;
+
+    // 그룹 평균: 기본(AB), 분석설계(CD), 실행평가(EF)
+    const gBase = (r.A+r.B)/2, gDesign = (r.C+r.D)/2, gPractice = (r.E+r.F)/2;
+    const groups = [{name:"base",avg:gBase},{name:"design",avg:gDesign},{name:"practice",avg:gPractice}];
+    groups.sort((a,b)=>b.avg-a.avg);
+    const topG = groups[0].name, botG = groups[2].name;
+
+    // 그룹 내 H 카운트
+    const bH = (lv.A===2?1:0)+(lv.B===2?1:0);
+    const dH = (lv.C===2?1:0)+(lv.D===2?1:0);
+    const pH = (lv.E===2?1:0)+(lv.F===2?1:0);
+    const bL = (lv.A===0?1:0)+(lv.B===0?1:0);
+    const dL = (lv.C===0?1:0)+(lv.D===0?1:0);
+    const pL = (lv.E===0?1:0)+(lv.F===0?1:0);
+
+    let c, d, p, a; // constellation, desc, pattern, advice
+
+    // ════════════════════════════════════
+    // 1) nH=6 : 올 하이
+    // ════════════════════════════════════
+    if (nH===6 && vals.every(v=>v===5)) {
+      c="👑 마스터의 왕관별"; p="전 영역 만점 (5점)";
+      d="모든 역량이 최고점! 이론·실천·성찰이 완벽하게 갖춰진 AI 교육의 진정한 마스터입니다.";
+      a="학습공동체 멘토로서 동료들의 성장을 이끌어 보세요. G역량의 정수입니다.";
+    }
+    else if (nH===6) {
+      c="⭐ 균형의 육각별"; p="전 영역 4점 이상";
+      d="모든 역량이 고르게 높습니다. 이론과 실천, 분석과 설계가 균형 잡힌 교육자의 모습입니다.";
+      a="5점으로 올리고 싶은 역량을 정해 집중하면 마스터 왕관별에 도달합니다!";
+    }
+    // ════════════════════════════════════
+    // 2) nH=5 : 하나만 빠진 (6가지)
+    // ════════════════════════════════════
+    else if (nH===5) {
+      const gap = codes.find(x=>lv[x]!==2);
+      const n5 = {
+        A:["⚡ 행동하는 리더별","A(교육 이해)만 빈자리","실천 역량이 모두 높지만, 교육의 본질적 이해를 한 단계 더 깊이 하면 완성입니다.","'왜 이 수업인가'를 한 문장으로 정리해 보세요. 철학이 실천을 더 빛나게 합니다."],
+        B:["🌋 자유로운 개척자별","B(윤리적 실천)만 빈자리","역량이 전반적으로 높지만, 윤리적 기반을 한번 더 점검하면 신뢰가 완성됩니다.","데이터 보안·저작권·공정성 체크리스트를 수업에 적용해 보세요."],
+        C:["🎭 직관의 예술가별","C(수업·학습자 분석)만 빈자리","직관과 경험으로 수업하는 타입! 여기에 데이터 분석을 더하면 직관이 과학이 됩니다.","학생 데이터를 한 가지만 수집·분석해 보세요. 보이지 않던 것이 보입니다."],
+        D:["🌊 흐르는 강물별","D(설계)만 빈자리","실행력과 분석력은 뛰어나지만, 구조화된 설계를 더하면 수업이 더 정밀해집니다.","백워드 설계로 한 차시를 다시 짜 보세요. 흐름에 뼈대가 생깁니다."],
+        E:["📝 완벽주의 기획자별","E(실행)만 빈자리","기획은 완벽하지만, 교실에서의 실행 경험을 더 쌓으면 설계가 살아납니다.","작은 활동 하나를 내일 바로 실행해 보세요. 완벽하지 않아도 괜찮습니다."],
+        F:["🚀 돌진하는 전사별","F(평가)만 빈자리","달리기는 잘하지만, 중간 점검(평가)을 더하면 방향이 더 정확해집니다.","수업 후 학생 반응을 간단히 수집하는 루틴 하나를 만들어 보세요."]
+      };
+      const info = n5[gap];
+      c=info[0]; p=info[1]; d=info[2]; a=info[3];
+    }
+    // ════════════════════════════════════
+    // 3) nH=4 : 4개 높음 (15가지 - 빠진 2개 기준)
+    // ════════════════════════════════════
+    else if (nH===4) {
+      const missing = codes.filter(x=>lv[x]!==2).join("");
+      const n4 = {
+        "AB":["🔧 실전 전문가별","AB(기본) 보완 필요","분석·설계·실행·평가 모두 강합니다! 기본 역량(이해·윤리)을 다지면 실천에 뿌리가 생깁니다.","AI 교육의 '왜'와 '윤리'를 한 번 더 되새겨 보세요."],
+        "AC":["⚖️ 윤리적 실행가별","AC(이해·분석) 보완 필요","윤리·설계·실행·평가가 강합니다. 교육 이해와 데이터 분석을 더하면 완성입니다.","학생 데이터를 윤리적으로 분석하는 연습이 두 약점을 동시에 채웁니다."],
+        "AD":["🎯 현장 대응별","AD(이해·설계) 보완 필요","윤리·분석·실행·평가가 강한 현장형! 교육 철학과 체계적 설계를 더하면 더 깊어집니다.","수업 전 '이 활동의 교육적 목적은?'을 한 줄로 적어보는 습관을 들여보세요."],
+        "AE":["📋 전략가별","AE(이해·실행) 보완 필요","윤리·분석·설계·평가 모두 강한 전략형! 교육 이해를 깊이 하고 실행 경험을 쌓으면 완성입니다.","설계한 수업을 직접 실행하면서 교육의 본질을 체감해 보세요."],
+        "AF":["🔄 순환 설계별","AF(이해·평가) 보완 필요","윤리·분석·설계·실행이 강합니다. 교육 이해와 평가 환류를 더하면 순환이 완성됩니다.","수업 후 '무엇이 달라졌나' 한 줄 기록이 평가의 시작입니다."],
+        "BC":["🚀 혁신가별","BC(윤리·분석) 보완 필요","이해·설계·실행·평가가 강한 혁신형! 윤리적 감각과 데이터 분석을 더하면 안전한 혁신이 됩니다.","AI 도구 활용 시 윤리 체크리스트를 한 번씩 점검해 보세요."],
+        "BD":["🔬 실험자별","BD(윤리·설계) 보완 필요","이해·분석·실행·평가가 강합니다. 체계적 설계와 윤리 기반을 더하면 실험이 연구가 됩니다.","실행 전 간단한 수업 설계안을 작성하는 습관이 도움됩니다."],
+        "BE":["📐 이론 설계자별","BE(윤리·실행) 보완 필요","이해·분석·설계·평가가 강한 이론형! 윤리적 실천과 실행 경험을 더하면 완성입니다.","설계한 수업을 안전하게 실행하는 작은 도전을 해보세요."],
+        "BF":["🧪 탐구자별","BF(윤리·평가) 보완 필요","이해·분석·설계·실행이 강합니다. 윤리 기반 평가를 더하면 학생에게 더 신뢰받는 교육자가 됩니다.","공정한 평가 기준을 학생과 함께 만들어 보세요."],
+        "CD":["🌿 뿌리와 열매별","CD(분석·설계) 보완 필요","이해·윤리·실행·평가가 강합니다! 데이터 분석과 체계적 설계를 더하면 뿌리와 열매가 연결됩니다.","성취기준 기반 백워드 설계를 한 번 시도해 보세요."],
+        "CE":["⚖️ 균형 설계자별","CE(분석·실행) 보완 필요","이해·윤리·설계·평가가 강합니다. 분석과 실행을 보강하면 설계가 현실이 됩니다.","학생 데이터 하나를 분석하고 그 결과로 수업을 실행해 보세요."],
+        "CF":["🏗️ 건축가별","CF(분석·평가) 보완 필요","이해·윤리·설계·실행이 강합니다. 데이터 분석과 평가를 더하면 건축이 완공됩니다.","수업 후 간단한 학습 데이터를 수집·분석하는 루틴을 만들어 보세요."],
+        "DE":["📊 분석 평가별","DE(설계·실행) 보완 필요","이해·윤리·분석·평가가 강합니다. 설계와 실행을 연결하면 분석-평가 루프가 완성됩니다.","분석 결과를 수업 설계에 반영하고 직접 실행해 보세요."],
+        "DF":["🔍 탐정별","DF(설계·평가) 보완 필요","이해·윤리·분석·실행이 강합니다. 체계적 설계와 평가를 더하면 탐구가 결론에 도달합니다.","수업의 시작(설계)과 끝(평가)을 의식적으로 구조화해 보세요."],
+        "EF":["🏗️ 기획자의 청사진별","EF(실행·평가) 보완 필요","이해·윤리·분석·설계 모두 강합니다! 실행과 평가를 더하면 청사진이 건물이 됩니다.","설계한 수업을 작게라도 실행하고, 학생 반응을 기록해 보세요."]
+      };
+      const info = n4[missing] || ["🌊 파도의 물결별","4영역 강세","대부분 높은 수준이지만 물결처럼 미세한 강약이 있습니다.","낮은 영역에 작은 노력을 기울이면 물결이 잔잔한 호수가 됩니다."];
+      c=info[0]; p=info[1]; d=info[2]; a=info[3];
+    }
+    // ════════════════════════════════════
+    // 4) nH=3 : 3개 높음 (20가지 - 높은 3개 기준)
+    // ════════════════════════════════════
+    else if (nH===3) {
+      const highs = codes.filter(x=>lv[x]===2).join("");
+      const n3 = {
+        "ABC":["📚 학자의 삼각별","이해+윤리+분석 강세","교육 철학·윤리·데이터 분석이 모두 강합니다. 학문적 기반이 탄탄한 연구형 교육자입니다.","이 기반을 설계(D)·실행(E)으로 확장하면 이론이 교실에서 살아납니다."],
+        "ABD":["🏛️ 설계 철학별","이해+윤리+설계 강세","교육 철학과 윤리 위에 수업을 설계하는 교육자입니다. 신뢰받는 수업의 토대를 갖추고 있습니다.","설계한 수업을 실행(E)하고 평가(F)로 확인하면 순환이 완성됩니다."],
+        "ABE":["🛡️ 실천적 수호별","이해+윤리+실행 강세","교육의 뜻을 이해하고, 윤리적으로, 직접 실행하는 교육자입니다. 행동하는 양심입니다.","분석(C)·설계(D)·평가(F)를 체계적으로 보강해 보세요."],
+        "ABF":["⚖️ 교육감별","이해+윤리+평가 강세","교육을 깊이 이해하고, 윤리적으로, 공정하게 평가하는 교육자입니다.","분석(C)·설계(D)·실행(E)을 더하면 평가의 뿌리가 더 깊어집니다."],
+        "ACD":["🔬 연구 설계별","이해+분석+설계 강세","교육을 이해하고, 데이터를 분석하고, 수업을 설계하는 체계적 교육자입니다.","설계를 실행(E)에 옮기고 평가(F)로 확인하는 경험을 쌓아보세요."],
+        "ACE":["🌿 탐구 실천별","이해+분석+실행 강세","이해하고 분석한 것을 바로 실천하는 교육자입니다. 탐구와 행동이 연결되어 있습니다.","설계(D)와 평가(F)를 더하면 탐구가 체계적 연구가 됩니다."],
+        "ACF":["📊 증거기반별","이해+분석+평가 강세","교육을 이해하고, 데이터를 분석하고, 평가하는 증거 기반 교육자입니다.","설계(D)·실행(E)을 더하면 증거가 수업을 바꾸는 힘이 됩니다."],
+        "ADE":["🎨 창작 실행별","이해+설계+실행 강세","교육을 이해하고 수업을 설계해서 바로 실행하는 창작형 교육자입니다.","윤리(B)·분석(C)·평가(F)를 더하면 창작에 안전장치가 생깁니다."],
+        "ADF":["📐 정밀 설계별","이해+설계+평가 강세","교육 이해 위에 설계하고 평가까지 연결하는 정밀한 교육자입니다.","분석(C)·실행(E)을 더해 설계-실행-평가 순환을 완성해 보세요."],
+        "AEF":["🔥 현장 관찰별","이해+실행+평가 강세","교육을 이해하면서 실행하고 평가하는 현장형 교육자입니다.","분석(C)·설계(D)를 체계적으로 더하면 현장 경험이 구조화됩니다."],
+        "BCD":["🛡️ 안전 설계별","윤리+분석+설계 강세","윤리적으로 데이터를 분석하고 수업을 설계하는 안전한 교육자입니다.","교육 이해(A)·실행(E)·평가(F)를 더하면 안전한 수업이 완성됩니다."],
+        "BCE":["🔬 윤리적 실험별","윤리+분석+실행 강세","윤리적 기반에서 데이터를 분석하고 실행하는 교육자입니다.","교육 이해(A)·설계(D)·평가(F)를 더하면 실험이 연구가 됩니다."],
+        "BCF":["⚖️ 공정 분석별","윤리+분석+평가 강세","윤리적이고 데이터 기반으로 공정하게 평가하는 교육자입니다.","교육 이해(A)·설계(D)·실행(E)을 더하면 공정함이 수업 전체로 퍼집니다."],
+        "BDE":["🌿 윤리적 실천별","윤리+설계+실행 강세","윤리적 기반에서 설계하고 실행하는 믿음직한 교육자입니다.","교육 이해(A)·분석(C)·평가(F)를 더하면 실천에 깊이가 생깁니다."],
+        "BDF":["📏 신뢰 설계별","윤리+설계+평가 강세","윤리적으로 설계하고 평가하여 학생·학부모에게 신뢰받는 교육자입니다.","교육 이해(A)·분석(C)·실행(E)을 더하면 신뢰가 성과로 이어집니다."],
+        "BEF":["🛡️ 현장 윤리별","윤리+실행+평가 강세","윤리적으로 실행하고 평가하는 현장 중심 교육자입니다.","교육 이해(A)·분석(C)·설계(D)를 더하면 현장 역량에 체계가 잡힙니다."],
+        "CDE":["🎯 정조준별","분석+설계+실행 강세","데이터를 분석하고 설계하여 실행까지 연결하는 교육자입니다. 목표를 정확히 겨냥합니다.","교육 이해(A)·윤리(B)·평가(F)를 더하면 조준이 더 정밀해집니다."],
+        "CDF":["📊 데이터 설계별","분석+설계+평가 강세","데이터로 설계하고 평가하는 체계적 교육자입니다.","교육 이해(A)·윤리(B)·실행(E)을 더하면 데이터가 수업을 움직입니다."],
+        "CEF":["⚡ 실전 분석별","분석+실행+평가 강세","분석하고 실행하고 평가하는 빠른 순환을 돌리는 교육자입니다.","교육 이해(A)·윤리(B)·설계(D)를 더하면 속도에 방향이 생깁니다."],
+        "DEF":["🔥 실천 삼각별","설계+실행+평가 강세","설계-실행-평가 삼각형이 강력합니다. 교실에서 즉시 움직이는 실전형 교육자입니다.","교육 이해(A)·윤리(B)를 더하면 실천에 철학적 뿌리가 생깁니다."]
+      };
+      const info = n3[highs] || ["💎 원석의 다이아몬드별","3영역 강세","세 가지 강점이 빛나고 있습니다.","강점을 연결하면 시너지가 폭발합니다."];
+      c=info[0]; p=info[1]; d=info[2]; a=info[3];
+    }
+    // ════════════════════════════════════
+    // 5) nH=2 : 2개 높음
+    // ════════════════════════════════════
+    else if (nH===2) {
+      if (lv.A===2&&lv.B===2) { c="🏛️ 철학자의 등대별"; p="A(이해)+B(윤리) 쌍둥이 강세"; d="교육 철학과 윤리적 기반이 탄탄합니다. '왜' 해야 하는지 확실히 아는 교육자입니다."; a="이제 '어떻게'로 넘어갈 차례! 작은 수업 하나를 직접 설계·실행해 보세요."; }
+      else if (lv.C===2&&lv.D===2) { c="🧭 설계자의 나침반별"; p="C(분석)+D(설계) 쌍둥이 강세"; d="데이터로 학생을 읽고 수업을 디자인하는 핵심 루프가 강력합니다."; a="설계를 실행(E)에 옮기고, 평가(F)로 검증하는 순환을 경험해 보세요."; }
+      else if (lv.E===2&&lv.F===2) { c="🔥 실천의 화살별"; p="E(실행)+F(평가) 쌍둥이 강세"; d="실행력과 평가 역량이 강합니다. 교실에서 바로 움직이는 행동파 교육자입니다."; a="AI 교육의 본질(A)과 설계(D)를 되새기면 실천에 깊이가 더해집니다."; }
+      else if (lv.A===2&&lv.C===2) { c="📖 탐구자의 책별"; p="A(이해)+C(분석) 조합"; d="교육을 깊이 이해하고 데이터로 학생을 읽는 눈이 있습니다. 탐구형 교육자입니다."; a="이해와 분석을 설계(D)로 연결하면 수업이 살아납니다."; }
+      else if (lv.A===2&&lv.D===2) { c="🎨 창작자의 팔레트별"; p="A(이해)+D(설계) 조합"; d="교육 본질을 이해하고 수업으로 구현하는 창의적 설계 역량이 뛰어납니다."; a="설계한 수업을 동료에게 공유하고 피드백을 받아보세요."; }
+      else if (lv.A===2&&lv.E===2) { c="🌿 실천철학별"; p="A(이해)+E(실행) 조합"; d="'왜'를 알면서 '바로' 행동으로 옮기는 교육자입니다. 이론과 실천이 직결됩니다."; a="중간 과정(C·D·F)을 보강하면 실행의 정밀도가 높아집니다."; }
+      else if (lv.A===2&&lv.F===2) { c="🦅 독수리의 날개별"; p="A(이해)+F(평가) 양 끝 강세"; d="'왜'(A)와 '얼마나'(F)는 확실히 아는데, 중간 과정에 빈틈이 있습니다."; a="C→D→E 순서로 중간 다리를 놓으면 날개가 몸통과 연결됩니다."; }
+      else if (lv.B===2&&lv.C===2) { c="🛡️ 안전분석별"; p="B(윤리)+C(분석) 조합"; d="윤리적 감각과 데이터 분석력을 동시에 갖추고 있습니다. 안전한 데이터 활용 전문가입니다."; a="분석 결과를 설계(D)와 실행(E)으로 연결해 보세요."; }
+      else if (lv.B===2&&lv.D===2) { c="⚖️ 설계윤리별"; p="B(윤리)+D(설계) 조합"; d="윤리적 기반 위에 수업을 설계하는 신뢰받는 교육자입니다."; a="설계한 수업을 실행(E)하고 평가(F)로 확인하면 순환이 완성됩니다."; }
+      else if (lv.B===2&&lv.E===2) { c="🌿 실천윤리의 올리브별"; p="B(윤리)+E(실행) 조합"; d="윤리적 감각과 실행력을 동시에 갖추고 있습니다. AI를 안전하면서도 적극적으로 활용합니다."; a="데이터 분석(C)을 더하면 '안전한 데이터 활용' 전문가가 됩니다."; }
+      else if (lv.B===2&&lv.F===2) { c="📏 공정평가별"; p="B(윤리)+F(평가) 조합"; d="윤리적 판단과 평가 역량이 결합되어, 공정하고 신뢰받는 평가를 설계합니다."; a="분석(C)·설계(D)를 더하면 평가의 토대가 더 단단해집니다."; }
+      else if (lv.C===2&&lv.E===2) { c="🔬 실험자별"; p="C(분석)+E(실행) 조합"; d="데이터를 읽고 바로 실행에 옮기는 실험적 교육자입니다. 가설→실행 루프가 빠릅니다."; a="설계(D)를 중간에 넣고 평가(F)로 마무리하면 정밀도가 높아집니다."; }
+      else if (lv.C===2&&lv.F===2) { c="📊 데이터루프별"; p="C(분석)+F(평가) 조합"; d="학생을 데이터로 읽고(C), 평가로 확인하는(F) 증거 기반 교육의 달인입니다."; a="분석과 평가 사이에 설계(D)·실행(E)을 의식적으로 강화해 보세요."; }
+      else if (lv.D===2&&lv.E===2) { c="🚀 로켓별"; p="D(설계)+E(실행) 조합"; d="설계한 것을 바로 실행에 옮기는 추진력! 계획과 행동이 하나로 이어집니다."; a="실행 전 분석(C)과 실행 후 평가(F)를 더하면 완전한 순환이 됩니다."; }
+      else if (lv.D===2&&lv.F===2) { c="🎯 정밀설계별"; p="D(설계)+F(평가) 조합"; d="설계와 평가가 강하여 수업의 시작과 끝을 정밀하게 잡습니다."; a="실행(E)에서의 경험을 쌓으면 설계-평가 루프가 더 날카로워집니다."; }
+      else if (lv.E===2&&lv.F===2) { c="🔥 실천의 화살별"; p="E(실행)+F(평가) 쌍둥이 강세"; d="실행하고 평가하는 현장 중심의 교육자입니다."; a="이해(A)·설계(D)를 보강하면 실행에 전략이 더해집니다."; }
+      else { c="👓 쌍안경별"; p="2영역 강세"; d=`${strongCodes.map(x=>`${x}(${COMP_NAMES[x]})`).join("·")} 두 렌즈로 교육을 바라보는 교육자입니다.`; a="두 강점을 연결하는 수업 사례를 만들어 보세요."; }
+    }
+    // ════════════════════════════════════
+    // 6) nH=1 : 1개만 높음
+    // ════════════════════════════════════
+    else if (nH===1) {
+      const solo = codes.find(x=>lv[x]===2);
+      const nameMap = {
+        A:["🏛️ 철학자의 등대별","A(교육 이해) 단독 강세","교육의 '왜'를 깊이 이해하는 교육자입니다. 이 철학이 다른 역량 성장의 토대가 됩니다.","이해를 윤리(B)·설계(D)로 확장하면 기반이 넓어집니다."],
+        B:["🛡️ 수호자의 방패별","B(윤리적 실천) 단독 강세","AI 시대의 윤리적 나침반이 확고합니다. 데이터 보안, 공정성에 대한 감각이 뛰어납니다.","윤리 기반 위에 수업 설계(D)를 얹으면 신뢰받는 AI 수업이 탄생합니다."],
+        C:["🔬 분석가의 현미경별","C(수업·학습자 분석) 단독 강세","학생과 데이터를 읽는 눈이 뛰어납니다. 수업의 출발점을 정확히 짚는 힘이 있습니다.","분석 결과를 설계(D)로 연결하면 맞춤형 수업이 시작됩니다."],
+        D:["📐 건축가의 자별","D(설계) 단독 강세","수업 설계에 대한 자신감이 돋보입니다. 아이디어를 구조로 만드는 능력이 탁월합니다.","설계를 실행(E)에 옮기고 학생 반응을 분석(C)해 보세요."],
+        E:["⚡ 실행가의 번개별","E(실행) 단독 강세","실행력이 단연 돋보입니다. 계획을 교실에서 실현하는 추진력의 소유자입니다.","실행 전 설계(D)와 실행 후 평가(F)를 의식적으로 더해보세요."],
+        F:["📏 심판자의 저울별","F(평가) 단독 강세","평가와 피드백에 대한 전문성이 높습니다. 학생 성장을 측정하고 이끄는 힘이 있습니다.","평가 데이터를 분석(C)하고 다음 설계(D)에 반영하는 환류를 만들어 보세요."]
+      };
+      const info = nameMap[solo];
+      c=info[0]; p=info[1]; d=info[2]; a=info[3];
+      // nL 비율에 따라 변형
+      if (nL >= 4) { c = c.replace("별","별 (외로운 빛)"); d += " 다만 다른 영역과의 격차가 커서, 강점이 고립되지 않도록 인접 역량부터 넓혀가세요."; }
+    }
+    // ════════════════════════════════════
+    // 7) nH=0 : 높은 점수 없음 (전부 1~3점)
+    // ════════════════════════════════════
+    else {
+      if (nM >= 5) { c="🌕 보름달별"; p="전반적 중간 수준 (대부분 3점)"; d="모든 역량이 중간 수준에서 균형을 이루고 있습니다. 안정적이지만 돌파가 필요한 시점입니다."; a="가장 흥미로운 역량 하나를 골라 4점 이상으로 끌어올려 보세요."; }
+      else if (nM >= 3 && nL >= 1) {
+        if (topG==="base") { c="🌤️ 동트는 새벽별"; p="기본 역량 중심 중간 수준"; d="교육 이해·윤리 영역이 상대적으로 앞서 있습니다. 기본기가 잡히기 시작한 교육자입니다."; a="기본 역량을 발판 삼아 분석(C)·설계(D)로 확장해 보세요."; }
+        else if (topG==="design") { c="🌗 반달별"; p="분석·설계 중심 중간 수준"; d="분석·설계 영역이 상대적으로 강합니다. 수업 구조를 잡는 감각이 자라고 있습니다."; a="설계한 수업을 작게라도 실행(E)해 보면 자신감이 올라갑니다."; }
+        else { c="🌒 초승달별"; p="실행·평가 중심 중간 수준"; d="실행·평가 영역이 상대적으로 앞서 있습니다. 행동으로 배우는 타입의 교육자입니다."; a="이해(A)와 설계(D)를 보강하면 실행의 방향성이 뚜렷해집니다."; }
+      }
+      else if (nL >= 5) { c="🌱 성장의 씨앗별"; p="대부분 1~2점 수준"; d="아직 시작점에 있지만, 자신을 정확히 인식하는 것 자체가 성장의 출발입니다."; a="연수에서 가장 인상 깊었던 한 가지를 떠올리고 거기서부터 키워보세요."; }
+      else if (nL >= 3 && nM >= 2) {
+        if (topG==="base") { c="🌱 뿌리 내리는 별"; p="기본 역량 쪽이 상대적 강세"; d="아직 전반적으로 낮지만, 교육 이해·윤리 쪽에서 성장의 싹이 보입니다."; a="A·B를 3점으로 끌어올리면 자연스럽게 다른 역량도 따라옵니다."; }
+        else if (topG==="design") { c="🌠 새벽별"; p="분석·설계 쪽이 상대적 강세"; d="분석·설계 영역에서 가능성의 빛이 보입니다. 여기서부터 확장해 보세요."; a="C·D를 먼저 3점으로 올리고, 실행(E)으로 연결해 보세요."; }
+        else { c="🔥 불씨별"; p="실행·평가 쪽이 상대적 강세"; d="실행·평가 영역에서 작지만 확실한 불씨가 있습니다. 경험이 성장의 엔진입니다."; a="작은 수업이라도 직접 실행하고 결과를 돌아보면 자신감이 쌓입니다."; }
+      }
+      else { 
+        const range = max - min;
+        if (range <= 1) { c="🪨 반석별"; p="고른 분포 (편차 1 이내)"; d="역량 간 편차가 거의 없는 안정적인 별자리입니다."; a="안정된 기반 위에서 한 영역을 집중 성장시키면 리더십으로 이어집니다."; }
+        else { c="🌌 미지의 성운별"; p="독특한 분포 패턴"; d="일반적 패턴에 속하지 않는 독특한 역량 분포입니다. 나만의 고유한 교육 스타일이 있다는 뜻입니다."; a="가장 점수가 높은 역량에서 출발하여 인접 역량으로 확장해 보세요."; }
+      }
+    }
+
+    return { constellation:c, pattern:p, desc:d, advice:a, strongCodes, weakCodes, avg: avg.toFixed(1) };
+  };
+
+  const completeStation = () => {
+    earnBadge(station.id);
+    if (currentStation < STATIONS.length - 1) {
+      setCurrentStation(currentStation + 1);
+    } else {
+      setPage("map");
+    }
+  };
+
+  const generateReport = () => {
+    let report = "═══════════════════════════════════════\n";
+    report += "   AI 교육 마스터 여정 — 나의 성장 보고서\n";
+    report += "═══════════════════════════════════════\n\n";
+    report += `작성일: ${"2026. 07. 19."}\n`;
+    report += `획득 뱃지: ${badges.size} / 12\n\n`;
+
+    STATIONS.forEach(s => {
+      report += `──────────────────────────────\n`;
+      report += `${s.icon} ${s.title}\n`;
+      report += `──────────────────────────────\n`;
+      if (s.inputType === "multi_entry") {
+        const entries = multiEntries[s.id] || [];
+        if (s.question) report += `Q: ${s.question}\n`;
+        if (entries.length > 0) {
+          entries.forEach((e, i) => { report += `  #${i+1}: ${e}\n`; });
+        } else { report += "  (미작성)\n"; }
+        report += "\n";
+      } else if (s.inputType === "textarea" && answers[s.id]) {
+        if (s.question) report += `Q: ${s.question}\n`;
+        report += `A: ${answers[s.id]}\n\n`;
+      } else if (s.inputType === "reflection_table") {
+        s.tableRows.forEach((row, i) => {
+          const val = tableAnswers[`${s.id}-${i}`] || "(미작성)";
+          report += `  ${row.label}: ${val}\n`;
+        });
+        report += "\n";
+      } else if (s.inputType === "competency_rating") {
+        s.ratings.forEach(r => {
+          report += `  ${r.code}. ${r.name}: ${ratings[r.code] || "-"}점\n`;
+        });
+        report += "\n";
+      } else if (s.inputType === "constellation") {
+        s.fields.forEach(f => {
+          report += `  ${f.label}: ${constellationFields[f.id] || "(미작성)"}\n`;
+        });
+        report += "\n";
+      } else if (s.inputType === "kpt") {
+        ["keep","problem","try"].forEach(k => {
+          report += `  ${k.charAt(0).toUpperCase()+k.slice(1)}:\n`;
+          if ((kpt[k]||[]).length > 0) {
+            kpt[k].forEach((e,i) => { report += `    #${i+1}: ${e}\n`; });
+          } else { report += `    (미작성)\n`; }
+        });
+        report += "\n";
+      } else if (s.inputType === "before_after") {
+        s.rows.forEach((row, i) => {
+          report += `  [${row.label}]\n`;
+          const entries = beforeAfter[i] || [];
+          if (entries.length > 0) {
+            entries.forEach((e,j) => { report += `    #${j+1} Before: ${e.before||"(미작성)"} → After: ${e.after||"(미작성)"}\n`; });
+          } else { report += `    (미작성)\n`; }
+        });
+        report += "\n";
+      } else {
+        report += "(미작성)\n\n";
+      }
+    });
+
+    report += "═══════════════════════════════════════\n";
+    report += badges.size >= 12 ? "🏆 축하합니다! AI 교육 마스터 달성!\n" : `아직 ${12 - badges.size}개의 뱃지가 남아 있습니다. 모든 센터를 완료해 보세요!\n`;
+    report += "═══════════════════════════════════════\n";
+    return report;
+  };
+
+  const [saving, setSaving] = useState(null);
+
+  const drawReportToCanvas = () => {
+    const W = 800, PAD = 40, LINE = 22, SEC = 16;
+    const lines = [];
+    const addLine = (text, opts = {}) => lines.push({ text, ...opts });
+    const addGap = (h = 10) => lines.push({ gap: h });
+
+    addLine("AI 교육 마스터 여정 — 나의 성장 보고서", { size: 22, color: "#e0e7ff", bold: true, align: "center" });
+    addGap(6);
+    addLine(`작성일: ${"2026. 07. 19."}  ·  뱃지: ${badges.size}/12`, { size: 13, color: "#a5b4fc", align: "center" });
+    addGap(4);
+    addLine(STATIONS.map(s => badges.has(s.id) ? s.badge : "🔒").join("  "), { size: 16, align: "center" });
+    addGap(20);
+
+    STATIONS.forEach(s => {
+      addLine(`${s.icon}  ${s.title}`, { size: 16, color: "#e0e7ff", bold: true, bg: "#312e81" });
+      addGap(4);
+
+      if (s.inputType === "multi_entry") {
+        const entries = multiEntries[s.id] || [];
+        if (s.question) addLine(`Q: ${s.question}`, { size: 12, color: "#fbbf24" });
+        if (entries.length > 0) entries.forEach((e, i) => addLine(`  #${i + 1}: ${e}`, { size: 12, color: "#c4b5fd" }));
+        else addLine("  (미작성)", { size: 12, color: "#4b5563" });
+      } else if (s.inputType === "textarea") {
+        if (s.question) addLine(`Q: ${s.question}`, { size: 12, color: "#fbbf24" });
+        addLine(`  ${answers[s.id] || "(미작성)"}`, { size: 12, color: answers[s.id] ? "#c4b5fd" : "#4b5563" });
+      } else if (s.inputType === "reflection_table") {
+        (s.tableRows || []).forEach((row, i) => {
+          const val = tableAnswers[`${s.id}-${i}`] || "(미작성)";
+          addLine(`  ${row.label}: ${val}`, { size: 12, color: val !== "(미작성)" ? "#c4b5fd" : "#4b5563" });
+        });
+      } else if (s.inputType === "competency_rating") {
+        (s.ratings || []).forEach(r => {
+          addLine(`  ${r.code}. ${r.name}: ${ratings[r.code] || "-"}점`, { size: 12, color: ratings[r.code] ? "#c4b5fd" : "#4b5563" });
+        });
+      } else if (s.inputType === "constellation") {
+        (s.fields || []).forEach(f => {
+          addLine(`  ${f.label}: ${constellationFields[f.id] || "(미작성)"}`, { size: 12, color: constellationFields[f.id] ? "#c4b5fd" : "#4b5563" });
+        });
+      } else if (s.inputType === "kpt") {
+        ["keep", "problem", "try"].forEach(k => {
+          const label = k.charAt(0).toUpperCase() + k.slice(1);
+          addLine(`  [${label}]`, { size: 12, color: k === "keep" ? "#22c55e" : k === "problem" ? "#f59e0b" : "#3b82f6", bold: true });
+          if ((kpt[k] || []).length > 0) kpt[k].forEach((e, i) => addLine(`    #${i + 1}: ${e}`, { size: 12, color: "#c4b5fd" }));
+          else addLine("    (미작성)", { size: 12, color: "#4b5563" });
+        });
+      } else if (s.inputType === "before_after") {
+        (s.rows || []).forEach((row, i) => {
+          addLine(`  [${row.label}]`, { size: 12, color: "#e0e7ff", bold: true });
+          const entries = beforeAfter[i] || [];
+          if (entries.length > 0) entries.forEach((e, j) => addLine(`    #${j + 1}  Before: ${e.before || "-"}  →  After: ${e.after || "-"}`, { size: 11, color: "#c4b5fd" }));
+          else addLine("    (미작성)", { size: 12, color: "#4b5563" });
+        });
+      }
+      addGap(SEC);
+    });
+
+    addGap(10);
+    addLine(badges.size >= 12 ? "🏆 축하합니다! AI 교육 마스터 달성!" : `아직 ${12 - badges.size}개의 뱃지가 남아 있습니다.`, { size: 14, color: "#fbbf24", bold: true, align: "center" });
+
+    // Calculate height
+    let totalH = PAD * 2;
+    lines.forEach(l => { totalH += l.gap || (l.size || 14) + 8 + (l.bg ? 10 : 0); });
+
+    // Wrap long lines and recalc
+    const wrappedLines = [];
+    const canvas0 = document.createElement("canvas");
+    const ctx0 = canvas0.getContext("2d");
+    const maxTextW = W - PAD * 2 - 20;
+
+    lines.forEach(l => {
+      if (l.gap) { wrappedLines.push(l); return; }
+      ctx0.font = `${l.bold ? "bold " : ""}${l.size || 14}px 'Apple SD Gothic Neo', sans-serif`;
+      const words = (l.text || "").split("");
+      let line = "";
+      const sublines = [];
+      for (const char of words) {
+        if (ctx0.measureText(line + char).width > maxTextW) {
+          sublines.push(line);
+          line = char;
+        } else line += char;
+      }
+      if (line) sublines.push(line);
+      sublines.forEach((sl, si) => wrappedLines.push({ ...l, text: sl, bg: si === 0 ? l.bg : undefined }));
+    });
+
+    totalH = PAD * 2;
+    wrappedLines.forEach(l => { totalH += l.gap || (l.size || 14) + 8 + (l.bg ? 10 : 0); });
+
+    const dpr = 2;
+    const canvas = document.createElement("canvas");
+    canvas.width = W * dpr;
+    canvas.height = totalH * dpr;
+    const ctx = canvas.getContext("2d");
+    ctx.scale(dpr, dpr);
+
+    // Background
+    ctx.fillStyle = "#0f0a1e";
+    ctx.fillRect(0, 0, W, totalH);
+    ctx.fillStyle = "#1e1b4b";
+    const rr = 16;
+    ctx.beginPath();
+    ctx.moveTo(PAD - 10 + rr, PAD - 10);
+    ctx.arcTo(W - PAD + 10, PAD - 10, W - PAD + 10, totalH - PAD + 10, rr);
+    ctx.arcTo(W - PAD + 10, totalH - PAD + 10, PAD - 10, totalH - PAD + 10, rr);
+    ctx.arcTo(PAD - 10, totalH - PAD + 10, PAD - 10, PAD - 10, rr);
+    ctx.arcTo(PAD - 10, PAD - 10, W - PAD + 10, PAD - 10, rr);
+    ctx.fill();
+
+    let y = PAD;
+    wrappedLines.forEach(l => {
+      if (l.gap) { y += l.gap; return; }
+      const sz = l.size || 14;
+      if (l.bg) {
+        ctx.fillStyle = l.bg;
+        ctx.fillRect(PAD, y - 2, W - PAD * 2, sz + 12);
+        y += 5;
+      }
+      ctx.font = `${l.bold ? "bold " : ""}${sz}px 'Apple SD Gothic Neo', sans-serif`;
+      ctx.fillStyle = l.color || "#e0e7ff";
+      const x = l.align === "center" ? W / 2 : PAD + 10;
+      ctx.textAlign = l.align || "left";
+      ctx.fillText(l.text || "", x, y + sz);
+      y += sz + 8;
+    });
+    ctx.textAlign = "left";
+    return canvas;
+  };
+
+  const saveAsImage = () => {
+    setSaving("image");
+    setTimeout(() => {
+      try {
+        const canvas = drawReportToCanvas();
+        const dataUrl = canvas.toDataURL("image/png");
+        const a = document.createElement("a");
+        a.href = dataUrl;
+        a.download = `AI교육마스터_성장보고서_${"2026-07-19"}.png`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      } catch (e) { console.error(e); }
+      setSaving(null);
+    }, 100);
+  };
+
+  const saveAsPdf = () => {
+    setSaving("pdf");
+    setTimeout(() => {
+      try {
+        const canvas = drawReportToCanvas();
+        // Get JPEG data
+        const jpegDataUrl = canvas.toDataURL("image/jpeg", 0.92);
+        const jpegBase64 = jpegDataUrl.split(",")[1];
+        const jpegBytes = atob(jpegBase64);
+        const jpegLen = jpegBytes.length;
+
+        const imgW = canvas.width;
+        const imgH = canvas.height;
+
+        // PDF page size: fit image to A4 width (595.28pt), keep aspect ratio
+        const pageW = 595.28;
+        const scale = pageW / imgW;
+        const pageH = Math.max(imgH * scale, 841.89);
+        const drawW = pageW;
+        const drawH = imgH * scale;
+
+        // Build PDF manually
+        const offsets = [];
+        let pdf = "%PDF-1.4\n";
+
+        // Obj 1: Catalog
+        offsets.push(pdf.length);
+        pdf += "1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n";
+
+        // Obj 2: Pages
+        offsets.push(pdf.length);
+        pdf += "2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n";
+
+        // Obj 3: Page
+        offsets.push(pdf.length);
+        pdf += `3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pageW.toFixed(2)} ${pageH.toFixed(2)}] /Contents 4 0 R /Resources << /XObject << /Img0 5 0 R >> >> >>\nendobj\n`;
+
+        // Obj 4: Contents stream (draw image)
+        const contentStream = `q\n${drawW.toFixed(2)} 0 0 ${drawH.toFixed(2)} 0 ${(pageH - drawH).toFixed(2)} cm\n/Img0 Do\nQ\n`;
+        offsets.push(pdf.length);
+        pdf += `4 0 obj\n<< /Length ${contentStream.length} >>\nstream\n${contentStream}endstream\nendobj\n`;
+
+        // Obj 5: Image XObject - we need to write this as binary
+        // First build the header part as string
+        const imgHeader = `5 0 obj\n<< /Type /XObject /Subtype /Image /Width ${imgW} /Height ${imgH} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${jpegLen} >>\nstream\n`;
+        const imgFooter = "\nendstream\nendobj\n";
+
+        // Convert text part to bytes
+        const encoder = new TextEncoder();
+        const pdfTextBytes = encoder.encode(pdf);
+        const imgHeaderBytes = encoder.encode(imgHeader);
+        const imgFooterBytes = encoder.encode(imgFooter);
+
+        // Image object offset
+        const imgObjOffset = pdfTextBytes.length;
+
+        // Build JPEG byte array
+        const jpegArray = new Uint8Array(jpegLen);
+        for (let i = 0; i < jpegLen; i++) jpegArray[i] = jpegBytes.charCodeAt(i);
+
+        // Build xref
+        const xrefOffset = imgObjOffset + imgHeaderBytes.length + jpegLen + imgFooterBytes.length;
+
+        // Recalculate offsets for binary-aware positions
+        // offsets[0..3] are text-based, offset[4] = imgObjOffset
+        const finalOffsets = offsets.map(o => o); // 0-based text offsets are same as byte offsets for ASCII
+        finalOffsets.push(imgObjOffset);
+
+        let xref = "xref\n0 6\n";
+        xref += "0000000000 65535 f \n";
+        for (let i = 0; i < 5; i++) {
+          xref += String(finalOffsets[i]).padStart(10, "0") + " 00000 n \n";
+        }
+        xref += "trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n" + xrefOffset + "\n%%EOF";
+
+        const xrefBytes = encoder.encode(xref);
+
+        // Combine all parts into single ArrayBuffer
+        const totalLen = pdfTextBytes.length + imgHeaderBytes.length + jpegLen + imgFooterBytes.length + xrefBytes.length;
+        const pdfBuffer = new Uint8Array(totalLen);
+        let pos = 0;
+        pdfBuffer.set(pdfTextBytes, pos); pos += pdfTextBytes.length;
+        pdfBuffer.set(imgHeaderBytes, pos); pos += imgHeaderBytes.length;
+        pdfBuffer.set(jpegArray, pos); pos += jpegLen;
+        pdfBuffer.set(imgFooterBytes, pos); pos += imgFooterBytes.length;
+        pdfBuffer.set(xrefBytes, pos);
+
+        // Download
+        const blob = new Blob([pdfBuffer], { type: "application/pdf" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `AI교육마스터_성장보고서_${"2026-07-19"}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      } catch (e) { console.error(e); }
+      setSaving(null);
+    }, 100);
+  };
+
+  // ── Badge popup ──
+  const BadgePopup = () => {
+    if (!showBadge) return null;
+    const s = STATIONS.find(x => x.id === showBadge);
+    return (
+      <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,display:"flex",alignItems:"center",justifyContent:"center",zIndex:999,background:"rgba(0,0,0,0.7)",animation:"fadeIn 0.3s"}}>
+        <div style={{textAlign:"center",padding:"40px",borderRadius:16,background:"linear-gradient(135deg,#1e1b4b,#312e81)",border:"2px solid #a78bfa",boxShadow:"0 0 60px rgba(139,92,246,0.4)"}}>
+          <div style={{fontSize:64,marginBottom:12,animation:"bounce 0.6s"}}>{s.badge}</div>
+          <div style={{color:"#fbbf24",fontSize:14,fontWeight:700,letterSpacing:2,marginBottom:4}}>뱃지 획득!</div>
+          <div style={{color:"#e0e7ff",fontSize:20,fontWeight:700}}>{s.badgeName}</div>
+        </div>
+      </div>
+    );
+  };
+
+  // ── Start screen ──
+  if (page === "start") {
+    return (
+      <div style={{minHeight:"100vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",background:"linear-gradient(180deg,#0f0a1e 0%,#1a1145 50%,#0f0a1e 100%)",padding:24,fontFamily:"'Pretendard','Apple SD Gothic Neo',sans-serif"}}>
+        <style>{`
+          @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+          @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+          @keyframes bounce { 0%{transform:scale(0.3)} 50%{transform:scale(1.15)} 100%{transform:scale(1)} }
+          @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
+          @keyframes glow { 0%,100%{box-shadow:0 0 20px rgba(139,92,246,0.3)} 50%{box-shadow:0 0 40px rgba(139,92,246,0.6)} }
+          * { box-sizing:border-box; }
+          textarea,input { font-family:inherit; }
+        `}</style>
+        <div style={{fontSize:80,animation:"float 3s ease-in-out infinite",marginBottom:16}}>⚔️</div>
+        <h1 style={{color:"#e0e7ff",fontSize:28,fontWeight:800,textAlign:"center",margin:"0 0 8px",lineHeight:1.3}}>
+          AI 교육 마스터의 여정
+        </h1>
+        <p style={{color:"#a5b4fc",fontSize:15,textAlign:"center",margin:"0 0 8px",lineHeight:1.6}}>
+          12개의 센터를 돌며 뱃지를 모아<br/>마스터로 거듭나세요!
+        </p>
+        <div style={{color:"#7c3aed",fontSize:12,letterSpacing:3,fontWeight:600,marginBottom:32}}>
+          27차시 종합 복습
+        </div>
+        <button onClick={()=>setPage("map")} style={{
+          padding:"16px 48px",borderRadius:12,border:"none",cursor:"pointer",fontSize:17,fontWeight:700,
+          color:"#fff",background:"linear-gradient(135deg,#7c3aed,#6366f1)",
+          boxShadow:"0 4px 20px rgba(99,102,241,0.4)",transition:"transform 0.2s"
+        }} onMouseOver={e=>e.target.style.transform="scale(1.05)"} onMouseOut={e=>e.target.style.transform="scale(1)"}>
+          여정 시작하기
+        </button>
+      </div>
+    );
+  }
+
+  // ── Map screen ──
+  if (page === "map") {
+    const allComplete = badges.size >= 12;
+    return (
+      <div style={{minHeight:"100vh",background:"linear-gradient(180deg,#0f0a1e,#1a1145)",padding:"24px 16px",fontFamily:"'Pretendard','Apple SD Gothic Neo',sans-serif"}}>
+        <style>{`
+          @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+          @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+          @keyframes bounce { 0%{transform:scale(0.3)} 50%{transform:scale(1.15)} 100%{transform:scale(1)} }
+          @keyframes glow { 0%,100%{box-shadow:0 0 20px rgba(139,92,246,0.3)} 50%{box-shadow:0 0 40px rgba(139,92,246,0.6)} }
+          * { box-sizing:border-box; }
+        `}</style>
+        <BadgePopup />
+        <div style={{textAlign:"center",marginBottom:20}}>
+          <div style={{fontSize:32,marginBottom:4}}>🗺️</div>
+          <h2 style={{color:"#e0e7ff",fontSize:22,fontWeight:800,margin:"0 0 6px"}}>퀘스트 지도</h2>
+          <div style={{display:"flex",justifyContent:"center",gap:8,alignItems:"center",marginBottom:8}}>
+            <div style={{background:"#312e81",borderRadius:20,padding:"6px 16px",color:"#a5b4fc",fontSize:13,fontWeight:600}}>
+              🏅 {badges.size} / 12 뱃지
+            </div>
+          </div>
+          <div style={{background:"#1e1b4b",borderRadius:8,height:8,maxWidth:300,margin:"0 auto",overflow:"hidden"}}>
+            <div style={{height:"100%",borderRadius:8,background:"linear-gradient(90deg,#7c3aed,#a78bfa)",width:`${(badges.size/12)*100}%`,transition:"width 0.5s"}}/>
+          </div>
+        </div>
+
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(150px,1fr))",gap:12,maxWidth:700,margin:"0 auto 20px"}}>
+          {STATIONS.map((s, i) => {
+            const done = badges.has(s.id);
+            return (
+              <button key={s.id} onClick={()=>goStation(i)} style={{
+                padding:"16px 12px",borderRadius:12,border:done?"2px solid #a78bfa":"2px solid #312e81",cursor:"pointer",
+                background:done?"linear-gradient(135deg,#1e1b4b,#312e81)":"#13102b",
+                transition:"all 0.2s",position:"relative",textAlign:"center"
+              }} onMouseOver={e=>{e.currentTarget.style.transform="translateY(-3px)";e.currentTarget.style.boxShadow=`0 6px 20px ${s.color}33`}}
+                 onMouseOut={e=>{e.currentTarget.style.transform="translateY(0)";e.currentTarget.style.boxShadow="none"}}>
+                {done && <div style={{position:"absolute",top:-8,right:-8,fontSize:20}}>{s.badge}</div>}
+                <div style={{fontSize:28,marginBottom:6}}>{s.icon}</div>
+                <div style={{color:"#e0e7ff",fontSize:13,fontWeight:700,lineHeight:1.3}}>{s.title}</div>
+                <div style={{color:"#7c8db5",fontSize:11,marginTop:4}}>{s.subtitle}</div>
+                {done && <div style={{color:"#a78bfa",fontSize:10,marginTop:6,fontWeight:600}}>✓ 완료</div>}
+              </button>
+            );
+          })}
+        </div>
+
+        {allComplete && (
+          <div style={{textAlign:"center",margin:"16px auto",maxWidth:500,padding:24,borderRadius:16,
+            background:"linear-gradient(135deg,#1e1b4b,#312e81)",border:"2px solid #fbbf24",
+            animation:"glow 2s infinite"}}>
+            <div style={{fontSize:48,marginBottom:8}}>🏆</div>
+            <div style={{color:"#fbbf24",fontSize:20,fontWeight:800,marginBottom:8}}>AI 교육 마스터 달성!</div>
+            <div style={{color:"#c4b5fd",fontSize:13,marginBottom:16}}>12개 센터를 모두 완료했습니다!</div>
+          </div>
+        )}
+
+        <div style={{textAlign:"center",marginTop:8}}>
+          <button onClick={()=>setPage("report")} style={{
+            padding:"14px 36px",borderRadius:10,border:"none",cursor:"pointer",fontSize:15,fontWeight:700,
+            color:"#fff",background:allComplete?"linear-gradient(135deg,#f59e0b,#ef4444)":"linear-gradient(135deg,#4b5563,#374151)",
+            boxShadow:allComplete?"0 4px 20px rgba(245,158,11,0.3)":"none"
+          }}>
+            📋 성장 보고서 보기
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // ── Station page ──
+  if (page === "station") {
+    return (
+      <div style={{minHeight:"100vh",background:"linear-gradient(180deg,#0f0a1e,#1a1145)",padding:"20px 16px",fontFamily:"'Pretendard','Apple SD Gothic Neo',sans-serif"}}>
+        <style>{`
+          @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+          @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+          @keyframes bounce { 0%{transform:scale(0.3)} 50%{transform:scale(1.15)} 100%{transform:scale(1)} }
+          @keyframes glow { 0%,100%{box-shadow:0 0 15px rgba(139,92,246,0.2)} 50%{box-shadow:0 0 30px rgba(139,92,246,0.5)} }
+          * { box-sizing:border-box; }
+          textarea,input { font-family:inherit; }
+          textarea:focus,input:focus { outline:none; border-color:#7c3aed !important; box-shadow:0 0 0 3px rgba(124,58,237,0.2); }
+        `}</style>
+        <BadgePopup />
+
+        {/* Header */}
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:16,maxWidth:600,margin:"0 auto 16px"}}>
+          <button onClick={()=>setPage("map")} style={{background:"none",border:"none",color:"#a5b4fc",fontSize:14,cursor:"pointer",padding:"8px 0"}}>
+            ← 지도로
+          </button>
+          <div style={{color:"#7c8db5",fontSize:13,fontWeight:600}}>
+            {currentStation + 1} / {STATIONS.length}
+          </div>
+          <div style={{width:60}}/>
+        </div>
+
+        {/* Station info */}
+        <div style={{maxWidth:600,margin:"0 auto"}}>
+          <div style={{textAlign:"center",marginBottom:20}}>
+            <div style={{display:"inline-flex",alignItems:"center",justifyContent:"center",width:64,height:64,borderRadius:16,
+              background:`linear-gradient(135deg,${station.color}33,${station.color}11)`,border:`2px solid ${station.color}66`,fontSize:32,marginBottom:10}}>
+              {station.icon}
+            </div>
+            <h2 style={{color:"#e0e7ff",fontSize:22,fontWeight:800,margin:"0 0 4px"}}>{station.title}</h2>
+            <p style={{color:station.color,fontSize:13,margin:0,fontWeight:600}}>{station.subtitle}</p>
+            {badges.has(station.id) && <div style={{color:"#a78bfa",fontSize:12,marginTop:6}}>✓ {station.badgeName} 획득 완료</div>}
+          </div>
+
+          {/* Content */}
+          <div style={{background:"#1e1b4b",borderRadius:12,padding:20,marginBottom:20,border:"1px solid #312e81"}}>
+            {station.content.map((c, i) => (
+              <p key={i} style={{color:"#c4b5fd",fontSize:14,lineHeight:1.7,margin:i < station.content.length - 1 ? "0 0 10px" : 0}}>
+                {c}
+              </p>
+            ))}
+            {station.competencies && (
+              <div style={{marginTop:16}}>
+                {station.competencies.map(c => (
+                  <div key={c.code} style={{display:"flex",gap:10,alignItems:"center",padding:"8px 0",borderBottom:"1px solid #312e81"}}>
+                    <span style={{color:c.level==="기본"?"#60a5fa":c.level==="발전"?"#fbbf24":"#a78bfa",fontWeight:800,fontSize:16,minWidth:24}}>{c.code}</span>
+                    <div>
+                      <div style={{color:"#e0e7ff",fontSize:13,fontWeight:700}}>{c.name}</div>
+                      <div style={{color:"#7c8db5",fontSize:11}}>{c.desc}</div>
+                    </div>
+                    <span style={{marginLeft:"auto",fontSize:10,color:"#6b7280",background:"#1a1145",padding:"2px 8px",borderRadius:8}}>{c.level}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Competency Framework Banner */}
+          {station.hasCompetencyBanner && (
+            <div style={{marginBottom:20}}>
+              <button onClick={()=>setBannerOpen(!bannerOpen)} style={{
+                width:"100%",padding:"14px 20px",borderRadius:12,border:"2px solid #7c3aed",cursor:"pointer",
+                background:"linear-gradient(135deg,#1e1b4b,#312e81)",display:"flex",alignItems:"center",justifyContent:"space-between",
+                transition:"all 0.3s"
+              }}>
+                <div style={{display:"flex",alignItems:"center",gap:10}}>
+                  <span style={{fontSize:22}}>📋</span>
+                  <div style={{textAlign:"left"}}>
+                    <div style={{color:"#e0e7ff",fontSize:14,fontWeight:700}}>2026 교원 AI·디지털 교육역량체계</div>
+                    <div style={{color:"#a5b4fc",fontSize:11}}>탭하여 {bannerOpen?"접기":"펼쳐보기"}</div>
+                  </div>
+                </div>
+                <span style={{color:"#a5b4fc",fontSize:18,transition:"transform 0.3s",transform:bannerOpen?"rotate(180deg)":"rotate(0)"}}> ▼</span>
+              </button>
+              {bannerOpen && (
+                <div style={{marginTop:8,borderRadius:12,border:"1px solid #312e81",background:"#0f0a1e",overflow:"hidden",animation:"fadeIn 0.3s"}}>
+                  <div style={{padding:"14px 16px",background:"linear-gradient(90deg,#312e81,#1e1b4b)",borderBottom:"1px solid #312e81"}}>
+                    <div style={{color:"#fbbf24",fontSize:13,fontWeight:800,textAlign:"center"}}>핵심가치: 인간의 존엄성을 위한 교육 — AI·디지털 모든 학생의 성장</div>
+                  </div>
+                  <div style={{overflowX:"auto",padding:12}}>
+                    {COMP_FRAMEWORK.map(comp => (
+                      <div key={comp.code} style={{marginBottom:16,borderRadius:10,border:`1px solid ${comp.color}44`,overflow:"hidden"}}>
+                        <div style={{display:"flex",alignItems:"center",gap:8,padding:"10px 14px",background:`${comp.color}15`,borderBottom:`1px solid ${comp.color}33`}}>
+                          <span style={{color:comp.color,fontSize:18,fontWeight:900}}>{comp.code}</span>
+                          <div>
+                            <div style={{color:"#e0e7ff",fontSize:13,fontWeight:700}}>{comp.name}</div>
+                            <span style={{color:comp.color,fontSize:10,fontWeight:600,background:`${comp.color}22`,padding:"1px 8px",borderRadius:6}}>{comp.area}</span>
+                          </div>
+                        </div>
+                        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:0}}>
+                          {comp.cols.map((col,ci) => (
+                            <div key={ci} style={{padding:"10px 12px",borderRight:ci<2?`1px solid ${comp.color}22`:"none"}}>
+                              <div style={{color:comp.color,fontSize:11,fontWeight:800,marginBottom:2}}>{col.title}</div>
+                              <div style={{color:"#a5b4fc",fontSize:10,marginBottom:6,lineHeight:1.3}}>{col.sub}</div>
+                              {col.items.map((item,ii) => (
+                                <div key={ii} style={{color:"#c4b5fd",fontSize:10,lineHeight:1.5,marginBottom:2,paddingLeft:8,position:"relative"}}>
+                                  <span style={{position:"absolute",left:0,color:"#6b7280"}}>·</span>{item}
+                                </div>
+                              ))}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Input area */}
+          {station.inputType === "textarea" && (
+            <div style={{marginBottom:20}}>
+              <div style={{color:"#fbbf24",fontSize:15,fontWeight:700,marginBottom:10,lineHeight:1.5}}>
+                💬 {station.question}
+              </div>
+              <textarea value={answers[station.id]||""} onChange={e=>setAnswers({...answers,[station.id]:e.target.value})}
+                placeholder="여기에 자유롭게 작성하세요..."
+                style={{width:"100%",minHeight:120,padding:16,borderRadius:10,border:"2px solid #312e81",background:"#13102b",color:"#e0e7ff",fontSize:14,lineHeight:1.6,resize:"vertical"}}/>
+            </div>
+          )}
+
+          {station.inputType === "multi_entry" && (
+            <div style={{marginBottom:20}}>
+              <div style={{color:"#fbbf24",fontSize:15,fontWeight:700,marginBottom:10,lineHeight:1.5}}>
+                💬 {station.question}
+              </div>
+              {/* Existing entries */}
+              {(multiEntries[station.id] || []).map((entry, i) => (
+                <div key={i} style={{display:"flex",alignItems:"flex-start",gap:8,marginBottom:8,padding:"10px 14px",borderRadius:10,background:"#13102b",border:"1px solid #312e81"}}>
+                  <span style={{color:"#a78bfa",fontSize:13,fontWeight:700,marginTop:1}}>#{i+1}</span>
+                  <p style={{color:"#e0e7ff",fontSize:14,lineHeight:1.6,margin:0,flex:1,whiteSpace:"pre-wrap"}}>{entry}</p>
+                  <button onClick={()=>{const arr=[...(multiEntries[station.id]||[])];arr.splice(i,1);setMultiEntries({...multiEntries,[station.id]:arr})}}
+                    style={{background:"none",border:"none",color:"#6b7280",cursor:"pointer",fontSize:16,padding:"0 4px",flexShrink:0}}>✕</button>
+                </div>
+              ))}
+              {/* New entry input */}
+              <textarea value={currentInput} onChange={e=>setCurrentInput(e.target.value)}
+                placeholder="여기에 자유롭게 작성하세요..."
+                style={{width:"100%",minHeight:100,padding:16,borderRadius:10,border:"2px solid #312e81",background:"#13102b",color:"#e0e7ff",fontSize:14,lineHeight:1.6,resize:"vertical"}}/>
+              <button onClick={()=>{
+                if(currentInput.trim()){
+                  setMultiEntries({...multiEntries,[station.id]:[...(multiEntries[station.id]||[]),currentInput.trim()]});
+                  setCurrentInput("");
+                }
+              }} style={{
+                marginTop:8,padding:"10px 24px",borderRadius:8,border:"none",cursor:"pointer",fontSize:14,fontWeight:700,
+                color:"#fff",background:currentInput.trim()?"linear-gradient(135deg,#7c3aed,#6366f1)":"#374151",
+                transition:"all 0.2s",width:"100%"
+              }}>
+                ✓ 확인
+              </button>
+            </div>
+          )}
+
+          {station.inputType === "reflection_table" && (
+            <div style={{marginBottom:20}}>
+              {station.tableRows.map((row, i) => (
+                <div key={i} style={{marginBottom:12}}>
+                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:4}}>
+                    <span style={{color:"#a5b4fc",fontSize:13,fontWeight:700}}>{row.label}</span>
+                    <span style={{color:"#6b7280",fontSize:11}}>{row.hint}</span>
+                  </div>
+                  <input value={tableAnswers[`${station.id}-${i}`]||""} onChange={e=>setTableAnswers({...tableAnswers,[`${station.id}-${i}`]:e.target.value})}
+                    placeholder="한 줄로 적어보세요..."
+                    style={{width:"100%",padding:"10px 14px",borderRadius:8,border:"2px solid #312e81",background:"#13102b",color:"#e0e7ff",fontSize:14}}/>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {station.inputType === "competency_rating" && (
+            <div style={{marginBottom:20}}>
+              {station.ratings.map(r => (
+                <div key={r.code} style={{marginBottom:16,background:"#13102b",padding:14,borderRadius:10,border:"1px solid #312e81"}}>
+                  <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:8}}>
+                    <div>
+                      <span style={{color:"#a5b4fc",fontWeight:800,fontSize:16,marginRight:8}}>{r.code}</span>
+                      <span style={{color:"#e0e7ff",fontSize:14,fontWeight:600}}>{r.name}</span>
+                    </div>
+                    <span style={{color:"#7c8db5",fontSize:11}}>{r.desc}</span>
+                  </div>
+                  <div style={{display:"flex",gap:8}}>
+                    {[1,2,3,4,5].map(n => (
+                      <button key={n} onClick={()=>setRatings({...ratings,[r.code]:n})} style={{
+                        flex:1,padding:"8px 0",borderRadius:8,border:"none",cursor:"pointer",fontSize:14,fontWeight:700,
+                        background:ratings[r.code]>=n?"linear-gradient(135deg,#7c3aed,#6366f1)":"#1e1b4b",
+                        color:ratings[r.code]>=n?"#fff":"#6b7280",transition:"all 0.2s"
+                      }}>{n}</button>
+                    ))}
+                  </div>
+                </div>
+              ))}
+              <div style={{display:"flex",justifyContent:"center",marginTop:16}}>
+                <RadarChart scores={[ratings.A,ratings.B,ratings.C,ratings.D,ratings.E,ratings.F]} />
+              </div>
+            </div>
+          )}
+
+          {station.inputType === "constellation" && (
+            <div style={{marginBottom:20}}>
+              {/* Radar Chart */}
+              <div style={{display:"flex",justifyContent:"center",marginBottom:8}}>
+                <RadarChart scores={[ratings.A,ratings.B,ratings.C,ratings.D,ratings.E,ratings.F]} size={220} />
+              </div>
+              {/* Score summary */}
+              <div style={{display:"flex",justifyContent:"center",gap:12,marginBottom:16,flexWrap:"wrap"}}>
+                {[{c:"A",n:"교육 이해"},{c:"B",n:"윤리적 실천"},{c:"C",n:"수업·학습자 분석"},{c:"D",n:"설계"},{c:"E",n:"실행"},{c:"F",n:"평가"}].map(item=>(
+                  <div key={item.c} style={{textAlign:"center",minWidth:50}}>
+                    <div style={{color:"#a5b4fc",fontSize:11,fontWeight:700}}>{item.c}</div>
+                    <div style={{color:ratings[item.c]?"#e0e7ff":"#4b5563",fontSize:16,fontWeight:800}}>{ratings[item.c]||"-"}</div>
+                    <div style={{color:"#6b7280",fontSize:9}}>{item.n}</div>
+                  </div>
+                ))}
+              </div>
+
+              {/* AI Analysis */}
+              {(() => {
+                const analysis = analyzeConstellation();
+                if (!analysis) return (
+                  <div style={{padding:16,borderRadius:10,background:"#13102b",border:"1px dashed #312e81",textAlign:"center",marginBottom:16}}>
+                    <div style={{color:"#6b7280",fontSize:13}}>⬅ 이전 페이지에서 A~F 역량 점수를 먼저 체크해주세요</div>
+                  </div>
+                );
+                return (
+                  <div style={{borderRadius:12,overflow:"hidden",border:"1px solid #7c3aed44",marginBottom:16,animation:"fadeIn 0.5s"}}>
+                    <div style={{padding:"14px 16px",background:"linear-gradient(135deg,#312e81,#1e1b4b)",textAlign:"center"}}>
+                      <div style={{fontSize:32,marginBottom:4}}>{analysis.constellation.split(" ")[0]}</div>
+                      <div style={{color:"#fbbf24",fontSize:18,fontWeight:800}}>{analysis.constellation}</div>
+                      <div style={{color:"#a5b4fc",fontSize:11,marginTop:4}}>패턴: {analysis.pattern} · 평균 {analysis.avg}점</div>
+                    </div>
+                    <div style={{padding:16,background:"#13102b"}}>
+                      <p style={{color:"#e0e7ff",fontSize:13,lineHeight:1.7,margin:"0 0 12px"}}>{analysis.desc}</p>
+                      <div style={{display:"flex",gap:8,marginBottom:12,flexWrap:"wrap"}}>
+                        {analysis.strongCodes.length > 0 && (
+                          <div style={{flex:1,minWidth:120,padding:10,borderRadius:8,background:"#22c55e15",border:"1px solid #22c55e33"}}>
+                            <div style={{color:"#22c55e",fontSize:11,fontWeight:700,marginBottom:4}}>💪 강점 역량</div>
+                            {analysis.strongCodes.map(c=>(
+                              <div key={c} style={{color:"#e0e7ff",fontSize:13,fontWeight:600}}>{c} — {COMP_NAMES[c]}</div>
+                            ))}
+                          </div>
+                        )}
+                        {analysis.weakCodes.length > 0 && (
+                          <div style={{flex:1,minWidth:120,padding:10,borderRadius:8,background:"#f59e0b15",border:"1px solid #f59e0b33"}}>
+                            <div style={{color:"#f59e0b",fontSize:11,fontWeight:700,marginBottom:4}}>🌱 성장 역량</div>
+                            {analysis.weakCodes.map(c=>(
+                              <div key={c} style={{color:"#e0e7ff",fontSize:13,fontWeight:600}}>{c} — {COMP_NAMES[c]}</div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                      <div style={{padding:10,borderRadius:8,background:"#6366f115",border:"1px solid #6366f133"}}>
+                        <div style={{color:"#a5b4fc",fontSize:11,fontWeight:700,marginBottom:4}}>💡 성장 제안</div>
+                        <div style={{color:"#c4b5fd",fontSize:13,lineHeight:1.6}}>{analysis.advice}</div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* Input fields */}
+              {station.fields.map(f => (
+                <div key={f.id} style={{marginBottom:12}}>
+                  <label style={{color:"#a5b4fc",fontSize:13,fontWeight:700,display:"inline",marginBottom:4}}>
+                    {f.label}
+                    {f.id === "strength" && <span style={{color:"#7c8db5",fontSize:11,fontWeight:400}}> (동점이면 가장 강점이라 생각되는 것을 선택해주세요)</span>}
+                    {f.id === "weakness" && <span style={{color:"#7c8db5",fontSize:11,fontWeight:400}}> (동점이면 가장 보완이 필요하다고 생각되는 것을 선택해주세요)</span>}
+                  </label>
+                  {f.id !== "reflection" ? (
+                    <div>
+                      <div style={{display:"flex",gap:6,marginBottom:6,flexWrap:"wrap"}}>
+                        {[{c:"A",n:"교육 이해"},{c:"B",n:"윤리적 실천"},{c:"C",n:"수업·학습자 분석"},{c:"D",n:"설계"},{c:"E",n:"실행"},{c:"F",n:"평가"}].map(item=>(
+                          <button key={item.c} onClick={()=>setCf({...constellationFields,[f.id]:`${item.c} — ${item.n}`})}
+                            style={{padding:"6px 10px",borderRadius:6,border:"1px solid #312e81",cursor:"pointer",fontSize:12,
+                              background:constellationFields[f.id]?.startsWith(item.c)?"#7c3aed":"#1e1b4b",
+                              color:constellationFields[f.id]?.startsWith(item.c)?"#fff":"#a5b4fc",transition:"all 0.2s"}}>
+                            {item.c} {item.n}
+                          </button>
+                        ))}
+                      </div>
+                      <input value={constellationFields[f.id]||""} readOnly
+                        placeholder={f.placeholder}
+                        style={{width:"100%",padding:"10px 14px",borderRadius:8,border:"2px solid #312e81",background:"#13102b",color:"#e0e7ff",fontSize:14}}/>
+                    </div>
+                  ) : (
+                    <input value={constellationFields[f.id]||""} onChange={e=>setCf({...constellationFields,[f.id]:e.target.value})}
+                      placeholder={f.placeholder}
+                      style={{width:"100%",padding:"10px 14px",borderRadius:8,border:"2px solid #312e81",background:"#13102b",color:"#e0e7ff",fontSize:14}}/>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {station.inputType === "kpt" && (
+            <div style={{marginBottom:20}}>
+              {[{key:"keep",label:"Keep",emoji:"💚",color:"#22c55e",hint:"잘된 것·이어갈 것"},
+                {key:"problem",label:"Problem",emoji:"🟠",color:"#f59e0b",hint:"아쉬운 것·문제"},
+                {key:"try",label:"Try",emoji:"🔵",color:"#3b82f6",hint:"새로 시도할 것"}].map(item => (
+                <div key={item.key} style={{marginBottom:18}}>
+                  <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:8}}>
+                    <span style={{fontSize:16}}>{item.emoji}</span>
+                    <span style={{color:item.color,fontSize:15,fontWeight:800}}>{item.label}</span>
+                    <span style={{color:"#6b7280",fontSize:11}}>— {item.hint}</span>
+                  </div>
+                  {/* Existing entries */}
+                  {(kpt[item.key]||[]).map((entry,i) => (
+                    <div key={i} style={{display:"flex",alignItems:"flex-start",gap:8,marginBottom:6,padding:"8px 12px",borderRadius:8,background:"#13102b",border:`1px solid ${item.color}33`}}>
+                      <span style={{color:item.color,fontSize:12,fontWeight:700,marginTop:1}}>#{i+1}</span>
+                      <p style={{color:"#e0e7ff",fontSize:13,lineHeight:1.5,margin:0,flex:1,whiteSpace:"pre-wrap"}}>{entry}</p>
+                      <button onClick={()=>{const arr=[...(kpt[item.key]||[])];arr.splice(i,1);setKpt({...kpt,[item.key]:arr})}}
+                        style={{background:"none",border:"none",color:"#6b7280",cursor:"pointer",fontSize:14,padding:"0 4px",flexShrink:0}}>✕</button>
+                    </div>
+                  ))}
+                  <textarea value={kptInput[item.key]||""} onChange={e=>setKptInput({...kptInput,[item.key]:e.target.value})}
+                    placeholder={`${item.hint}을 적어보세요...`}
+                    style={{width:"100%",minHeight:60,padding:12,borderRadius:10,border:`2px solid ${item.color}33`,background:"#13102b",color:"#e0e7ff",fontSize:14,lineHeight:1.6,resize:"vertical"}}/>
+                  <button onClick={()=>{
+                    if((kptInput[item.key]||"").trim()){
+                      setKpt({...kpt,[item.key]:[...(kpt[item.key]||[]),kptInput[item.key].trim()]});
+                      setKptInput({...kptInput,[item.key]:""});
+                    }
+                  }} style={{
+                    marginTop:6,padding:"8px 0",borderRadius:8,border:"none",cursor:"pointer",fontSize:13,fontWeight:700,
+                    color:"#fff",background:(kptInput[item.key]||"").trim()?item.color:"#374151",
+                    transition:"all 0.2s",width:"100%"
+                  }}>
+                    ✓ 확인
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {station.inputType === "before_after" && (
+            <div style={{marginBottom:20}}>
+              {station.rows.map((row, i) => (
+                <div key={i} style={{marginBottom:18,background:"#13102b",padding:14,borderRadius:10,border:"1px solid #312e81"}}>
+                  <div style={{color:"#e0e7ff",fontSize:14,fontWeight:700,marginBottom:10}}>{row.label}</div>
+                  {/* Existing entries */}
+                  {(beforeAfter[i]||[]).map((entry,j) => (
+                    <div key={j} style={{display:"grid",gridTemplateColumns:"1fr 1fr auto",gap:8,marginBottom:6,padding:"8px 10px",borderRadius:8,background:"#1e1b4b",border:"1px solid #312e81"}}>
+                      <div><span style={{color:"#f87171",fontSize:10,fontWeight:600}}>Before</span><div style={{color:"#e0e7ff",fontSize:12,lineHeight:1.4,marginTop:2}}>{entry.before}</div></div>
+                      <div><span style={{color:"#34d399",fontSize:10,fontWeight:600}}>After</span><div style={{color:"#e0e7ff",fontSize:12,lineHeight:1.4,marginTop:2}}>{entry.after}</div></div>
+                      <button onClick={()=>{const arr=[...(beforeAfter[i]||[])];arr.splice(j,1);setBa({...beforeAfter,[i]:arr})}}
+                        style={{background:"none",border:"none",color:"#6b7280",cursor:"pointer",fontSize:14,padding:"0 2px",alignSelf:"start"}}>✕</button>
+                    </div>
+                  ))}
+                  {/* New entry input */}
+                  <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+                    <div>
+                      <div style={{color:"#f87171",fontSize:11,fontWeight:600,marginBottom:4}}>Before (이전)</div>
+                      <textarea value={baInput[`before-${i}`]||""} onChange={e=>setBaInput({...baInput,[`before-${i}`]:e.target.value})}
+                        placeholder={row.beforeHint||"이전 모습..."}
+                        style={{width:"100%",minHeight:60,padding:10,borderRadius:8,border:"1px solid #312e81",background:"#1e1b4b",color:"#e0e7ff",fontSize:13,resize:"vertical"}}/>
+                    </div>
+                    <div>
+                      <div style={{color:"#34d399",fontSize:11,fontWeight:600,marginBottom:4}}>After (이후)</div>
+                      <textarea value={baInput[`after-${i}`]||""} onChange={e=>setBaInput({...baInput,[`after-${i}`]:e.target.value})}
+                        placeholder={row.afterHint||"이후 변화..."}
+                        style={{width:"100%",minHeight:60,padding:10,borderRadius:8,border:"1px solid #312e81",background:"#1e1b4b",color:"#e0e7ff",fontSize:13,resize:"vertical"}}/>
+                    </div>
+                  </div>
+                  <button onClick={()=>{
+                    const b = (baInput[`before-${i}`]||"").trim();
+                    const a = (baInput[`after-${i}`]||"").trim();
+                    if(b||a){
+                      setBa({...beforeAfter,[i]:[...(beforeAfter[i]||[]),{before:b,after:a}]});
+                      setBaInput({...baInput,[`before-${i}`]:"",[`after-${i}`]:""});
+                    }
+                  }} style={{
+                    marginTop:8,padding:"8px 0",borderRadius:8,border:"none",cursor:"pointer",fontSize:13,fontWeight:700,
+                    color:"#fff",background:((baInput[`before-${i}`]||"").trim()||(baInput[`after-${i}`]||"").trim())?"linear-gradient(135deg,#ec4899,#a855f7)":"#374151",
+                    transition:"all 0.2s",width:"100%"
+                  }}>
+                    ✓ 확인
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Navigation */}
+          <div style={{display:"flex",gap:10,marginBottom:32}}>
+            {currentStation > 0 && (
+              <button onClick={()=>setCurrentStation(currentStation-1)} style={{
+                flex:1,padding:"14px",borderRadius:10,border:"2px solid #312e81",cursor:"pointer",
+                background:"transparent",color:"#a5b4fc",fontSize:14,fontWeight:600
+              }}>← 이전</button>
+            )}
+            <button onClick={completeStation} style={{
+              flex:2,padding:"14px",borderRadius:10,border:"none",cursor:"pointer",fontSize:15,fontWeight:700,
+              color:"#fff",background:`linear-gradient(135deg,${station.color},${station.color}cc)`,
+              boxShadow:`0 4px 15px ${station.color}33`
+            }}>
+              {badges.has(station.id) ? (currentStation < STATIONS.length-1 ? "다음 센터 →" : "지도로 돌아가기") :
+                `${station.badge} 뱃지 획득하고 다음으로 →`}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── Report page ──
+  if (page === "report") {
+    return (
+      <div style={{minHeight:"100vh",background:"linear-gradient(180deg,#0f0a1e,#1a1145)",padding:"24px 16px",fontFamily:"'Pretendard','Apple SD Gothic Neo',sans-serif"}}>
+        <style>{`* { box-sizing:border-box; } @media print { .no-print{display:none!important;} }`}</style>
+        <div style={{maxWidth:650,margin:"0 auto"}}>
+          <div className="no-print" style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:20}}>
+            <button onClick={()=>setPage("map")} style={{background:"none",border:"none",color:"#a5b4fc",fontSize:14,cursor:"pointer"}}>← 지도로</button>
+            <div style={{display:"flex",gap:8}}>
+              <button onClick={saveAsImage} disabled={saving==="image"} style={{padding:"8px 20px",borderRadius:8,border:"none",cursor:saving?"wait":"pointer",fontSize:13,fontWeight:700,color:"#fff",background:"linear-gradient(135deg,#7c3aed,#6366f1)",opacity:saving==="image"?0.6:1}}>
+                {saving==="image" ? "⏳ 저장 중..." : "🖼️ 그림으로 저장"}
+              </button>
+              <button onClick={saveAsPdf} disabled={saving==="pdf"} style={{padding:"8px 20px",borderRadius:8,border:"none",cursor:saving?"wait":"pointer",fontSize:13,fontWeight:700,color:"#fff",background:"linear-gradient(135deg,#ef4444,#f59e0b)",opacity:saving==="pdf"?0.6:1}}>
+                {saving==="pdf" ? "⏳ 저장 중..." : "📄 PDF로 저장"}
+              </button>
+            </div>
+          </div>
+
+          <div ref={reportRef} style={{background:"#1e1b4b",borderRadius:16,padding:28,border:"1px solid #312e81"}}>
+            <div style={{textAlign:"center",marginBottom:24}}>
+              <div style={{fontSize:48,marginBottom:8}}>{badges.size >= 12 ? "🏆" : "📋"}</div>
+              <h1 style={{color:"#e0e7ff",fontSize:24,fontWeight:800,margin:"0 0 6px"}}>나의 성장 보고서</h1>
+              <p style={{color:"#a5b4fc",fontSize:13,margin:0}}>AI 교육 마스터 여정 · {"2026. 07. 19."}</p>
+              <div style={{display:"flex",justifyContent:"center",gap:4,marginTop:12,flexWrap:"wrap"}}>
+                {STATIONS.map(s => (
+                  <span key={s.id} style={{fontSize:20,opacity:badges.has(s.id)?1:0.2,transition:"opacity 0.3s"}}>{s.badge}</span>
+                ))}
+              </div>
+              <div style={{color:"#a78bfa",fontSize:13,marginTop:8,fontWeight:600}}>🏅 {badges.size}/12 뱃지</div>
+            </div>
+
+            {STATIONS.map(s => {
+              let content = null;
+              if (s.inputType === "multi_entry") {
+                const entries = multiEntries[s.id] || [];
+                content = entries.length > 0 ? (
+                  <div>
+                    {s.question && <div style={{color:"#fbbf24",fontSize:12,marginBottom:6}}>Q: {s.question}</div>}
+                    {entries.map((e, i) => (
+                      <div key={i} style={{display:"flex",gap:6,marginBottom:4,fontSize:13}}>
+                        <span style={{color:"#a78bfa",fontWeight:700}}>#{i+1}</span>
+                        <span style={{color:"#e0e7ff",whiteSpace:"pre-wrap"}}>{e}</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : <div style={{color:"#4b5563",fontSize:13,fontStyle:"italic"}}>미작성</div>;
+              } else if (s.inputType === "textarea") {
+                content = answers[s.id] ? (
+                  <div>
+                    {s.question && <div style={{color:"#fbbf24",fontSize:12,marginBottom:4}}>Q: {s.question}</div>}
+                    <div style={{color:"#e0e7ff",fontSize:14,lineHeight:1.6,whiteSpace:"pre-wrap"}}>{answers[s.id]}</div>
+                  </div>
+                ) : <div style={{color:"#4b5563",fontSize:13,fontStyle:"italic"}}>미작성</div>;
+              } else if (s.inputType === "reflection_table") {
+                content = (
+                  <div>{s.tableRows.map((row,i) => (
+                    <div key={i} style={{display:"flex",gap:8,marginBottom:4,fontSize:13}}>
+                      <span style={{color:"#a5b4fc",fontWeight:600,minWidth:100}}>{row.label}</span>
+                      <span style={{color:tableAnswers[`${s.id}-${i}`]?"#e0e7ff":"#4b5563"}}>{tableAnswers[`${s.id}-${i}`]||"미작성"}</span>
+                    </div>
+                  ))}</div>
+                );
+              } else if (s.inputType === "competency_rating") {
+                content = (
+                  <div style={{display:"flex",alignItems:"center",gap:16,flexWrap:"wrap"}}>
+                    <div style={{display:"flex",gap:12,flexWrap:"wrap"}}>
+                      {s.ratings.map(r => (
+                        <div key={r.code} style={{textAlign:"center"}}>
+                          <div style={{color:"#a5b4fc",fontSize:12,fontWeight:700}}>{r.code}</div>
+                          <div style={{color:ratings[r.code]?"#e0e7ff":"#4b5563",fontSize:18,fontWeight:800}}>{ratings[r.code]||"-"}</div>
+                        </div>
+                      ))}
+                    </div>
+                    <RadarChart scores={[ratings.A,ratings.B,ratings.C,ratings.D,ratings.E,ratings.F]} size={140} />
+                  </div>
+                );
+              } else if (s.inputType === "constellation") {
+                content = (
+                  <div>{s.fields.map(f => (
+                    <div key={f.id} style={{display:"flex",gap:8,marginBottom:4,fontSize:13}}>
+                      <span style={{color:"#a5b4fc",fontWeight:600,minWidth:80}}>{f.label}:</span>
+                      <span style={{color:constellationFields[f.id]?"#e0e7ff":"#4b5563"}}>{constellationFields[f.id]||"미작성"}</span>
+                    </div>
+                  ))}</div>
+                );
+              } else if (s.inputType === "kpt") {
+                content = (
+                  <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10}}>
+                    {[{key:"keep",label:"Keep",color:"#22c55e"},{key:"problem",label:"Problem",color:"#f59e0b"},{key:"try",label:"Try",color:"#3b82f6"}].map(item=>(
+                      <div key={item.key}>
+                        <div style={{color:item.color,fontSize:12,fontWeight:700,marginBottom:4}}>{item.label}</div>
+                        {(kpt[item.key]||[]).length > 0 ? kpt[item.key].map((e,i)=>(
+                          <div key={i} style={{color:"#e0e7ff",fontSize:12,lineHeight:1.5,marginBottom:3}}>
+                            <span style={{color:item.color,fontWeight:700}}>#{i+1}</span> {e}
+                          </div>
+                        )) : <div style={{color:"#4b5563",fontSize:12}}>미작성</div>}
+                      </div>
+                    ))}
+                  </div>
+                );
+              } else if (s.inputType === "before_after") {
+                content = (
+                  <div>{s.rows.map((row,i) => (
+                    <div key={i} style={{marginBottom:8}}>
+                      <div style={{color:"#e0e7ff",fontSize:13,fontWeight:700,marginBottom:4}}>{row.label}</div>
+                      {(beforeAfter[i]||[]).length > 0 ? (beforeAfter[i]).map((e,j)=>(
+                        <div key={j} style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,fontSize:12,marginBottom:3,paddingLeft:8}}>
+                          <div><span style={{color:"#f87171"}}>Before: </span><span style={{color:"#e0e7ff"}}>{e.before||"미작성"}</span></div>
+                          <div><span style={{color:"#34d399"}}>After: </span><span style={{color:"#e0e7ff"}}>{e.after||"미작성"}</span></div>
+                        </div>
+                      )) : <div style={{color:"#4b5563",fontSize:12,paddingLeft:8}}>미작성</div>}
+                    </div>
+                  ))}</div>
+                );
+              }
+
+              return (
+                <div key={s.id} style={{marginBottom:16,padding:14,borderRadius:10,background:"#13102b",border:"1px solid #312e81"}}>
+                  <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:8}}>
+                    <span style={{fontSize:18}}>{s.icon}</span>
+                    <span style={{color:"#e0e7ff",fontSize:14,fontWeight:700}}>{s.title}</span>
+                    <span style={{marginLeft:"auto",fontSize:14}}>{badges.has(s.id)?s.badge:"🔒"}</span>
+                  </div>
+                  {content}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return null;
+}
+
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
